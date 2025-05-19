@@ -1,37 +1,72 @@
-<!DOCTYPE html<html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>QFL Strategy Tracker</title>
   <style>
+    :root {
+      --primary: #00b894;
+      --primary-dark: #019875;
+      --accent: #0984e3;
+      --bg-light: #f0fcf9;
+      --bg-card: #fff;
+      --text: #2d3436;
+      --danger: #d63031;
+      --light-accent: #dff6f0;
+      
+      /* QFL level colors */
+      --level-5: #4cd137;  /* 5% - Green */
+      --level-10: #a3cb38; /* 10% - Lime Green */
+      --level-15: #ffda79; /* 15% - Yellow */
+      --level-20: #ff9f43; /* 20% - Orange */
+      --level-25: #ea8685; /* 25% - Light Red */
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       padding: 1rem;
-      background: #f0fcf9;
-      max-width: 600px;
+      background: var(--bg-light);
+      max-width: 100%;
       margin: auto;
-      color: #2d3436;
+      color: var(--text);
       position: relative;
+      line-height: 1.5;
     }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding-top: 3rem;
+    }
+    
     h1 {
-      font-size: 2rem;
+      font-size: 1.75rem;
       text-align: center;
-      color: #00b894;
-      margin-top: 4rem !important;
+      color: var(--primary);
+      margin: 1rem 0;
     }
+    
     #description {
-      font-size: 1rem;
+      font-size: 0.95rem;
       text-align: center;
-      margin-top: 1rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
+      padding: 0 0.5rem;
     }
+    
     .lang-btn {
       position: fixed;
-      left: 1rem;
+      right: 1rem;
       top: 1rem;
-      background: transparent;
-      color: #0984e3;
-      border: 1px solid #0984e3;
+      background: var(--accent);
+      color: white;
+      border: none;
       padding: 0.4rem 0.8rem;
       border-radius: 5px;
       font-weight: bold;
@@ -39,67 +74,412 @@
       z-index: 100;
       transition: all 0.3s ease;
     }
+    
     .lang-btn:hover {
-      background: #0984e3;
-      color: white;
+      background: #076bb7;
     }
-    label, input, select, button {
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    label {
       display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    
+    input, select, button {
       width: 100%;
-      margin-top: 1rem;
-      font-size: 1.1rem;
+      font-size: 1rem;
+      border-radius: 8px;
     }
+    
     input, select {
-      padding: 0.5rem;
+      padding: 0.75rem;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      background-color: white;
+      -webkit-appearance: none;
     }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(9, 132, 227, 0.2);
+    }
+    
+    .select-wrapper {
+      position: relative;
+    }
+    
+    .select-wrapper::after {
+      content: '▼';
+      font-size: 0.8rem;
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #666;
+    }
+    
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      margin: 1rem 0;
+    }
+    
+    .checkbox-container input[type="checkbox"] {
+      width: auto;
+      margin-right: 0.5rem;
+      height: 18px;
+      width: 18px;
+    }
+    
     button {
-      background: #00b894;
+      background: var(--primary);
       color: white;
       border: none;
-      padding: 0.7rem;
-      border-radius: 5px;
+      padding: 0.8rem;
+      font-weight: 600;
       cursor: pointer;
-      font-weight: bold;
+      transition: background 0.2s ease;
+      margin-bottom: 1rem;
     }
+    
     button:hover {
-      background: #019875;
+      background: var(--primary-dark);
     }
+    
     .token-box {
       position: relative;
-      border: 2px solid #00b894;
-      border-radius: 10px;
+      border: 2px solid var(--primary);
+      border-radius: 12px;
       padding: 1rem;
       margin-top: 1rem;
-      background: #fff;
+      background: var(--bg-card);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
+    
     .delete-btn {
       position: absolute;
-      top: 5px;
-      right: 5px;
-      background: #d63031;
+      top: 8px;
+      right: 8px;
+      background: var(--danger);
       color: white;
       border: none;
-      width: 25px;
-      height: 25px;
+      width: 30px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 1.2rem;
       border-radius: 50%;
       cursor: pointer;
       z-index: 1;
+      margin: 0;
+      padding: 0;
     }
+    
     .level {
-      background: #dff6f0;
+      background: var(--light-accent);
       display: block;
-      margin: 0.3rem 0;
-      padding: 0.4rem 0.7rem;
-      border-radius: 6px;
+      margin: 0.5rem 0;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: 'Courier New', monospace;
     }
+    
+    .level-5 { border-left: 5px solid var(--level-5); background-color: rgba(76, 209, 55, 0.1); }
+    .level-10 { border-left: 5px solid var(--level-10); background-color: rgba(163, 203, 56, 0.1); }
+    .level-15 { border-left: 5px solid var(--level-15); background-color: rgba(255, 218, 121, 0.1); }
+    .level-20 { border-left: 5px solid var(--level-20); background-color: rgba(255, 159, 67, 0.1); }
+    .level-25 { border-left: 5px solid var(--level-25); background-color: rgba(234, 134, 133, 0.1); }
+    
+    .level-percent {
+      font-weight: bold;
+      display: inline-block;
+      width: 60px;
+      color: var(--text);
+      font-size: 1.1rem;
+    }
+    
+    .level-price {
+      font-weight: bold;
+      color: var(--accent);
+    }
+    
+    .level-invest {
+      float: right;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    
     .token-header {
-      padding-right: 20px;
+      padding-right: 30px;
+      margin-bottom: 1rem;
+    }
+    
+    .token-header strong {
+      font-size: 1.3rem;
+      display: inline-block;
+      margin-bottom: 0.3rem;
+      color: var(--accent);
+    }
+    
+    .price-info {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+    
+    .price-box {
+      background: #f5f5f5;
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      flex: 1;
+      text-align: center;
+    }
+    
+    .price-box:first-child {
+      margin-right: 0.5rem;
+    }
+    
+    .price-value {
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      font-size: 1.1rem;
+      display: block;
+    }
+    
+    .price-bar-container {
+      margin: 2.5rem 0 1.5rem 0;
+      position: relative;
+      height: 36px;
+    }
+    
+    .price-bar {
+      height: 12px;
+      background: white;
+      border-radius: 6px;
+      width: 100%;
+      position: absolute;
+      top: 12px;
+      border: 1px solid #ddd;
+    }
+    
+    .price-marker {
+      position: absolute;
+      width: 4px;
+      height: 24px;
+      background: #2d3436;
+      border-radius: 2px;
+      top: 6px;
+      transform: translateX(-2px);
+    }
+    
+    .price-label {
+      position: absolute;
+      top: -25px;
+      transform: translateX(-50%);
+      background: #2d3436;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    
+    .level-price-label {
+      bottom: -25px;
+      top: unset;
+    }
+    
+    .base-price-marker {
+      background: var(--primary);
+      width: 6px;
+    }
+    
+    .base-price-label {
+      background: var(--primary);
+    }
+    
+    .level-marker-5 { background: var(--level-5); }
+    .level-marker-10 { background: var(--level-10); }
+    .level-marker-15 { background: var(--level-15); }
+    .level-marker-20 { background: var(--level-20); }
+    .level-marker-25 { background: var(--level-25); }
+    
+    .level-label-5 { background: var(--level-5); }
+    .level-label-10 { background: var(--level-10); }
+    .level-label-15 { background: var(--level-15); }
+    .level-label-20 { background: var(--level-20); }
+    .level-label-25 { background: var(--level-25); }
+    
+    .base-highlight {
+      display: inline-block;
+      background-color: rgba(0, 184, 148, 0.1);
+      border: 1px solid var(--primary);
+      border-radius: 4px;
+      padding: 0 4px;
+      color: var(--primary-dark);
+      font-weight: bold;
+    }
+    
+    .separator {
+      height: 1px;
+      background: #eee;
+      margin: 1.5rem 0;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 2rem 0;
+      color: #666;
+      font-style: italic;
+    }
+    
+    /* Make select2 match our styling */
+    .select2-container {
+      width: 100% !important;
+    }
+    
+    .select2-container .select2-selection--single {
+      height: 45px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      line-height: 45px;
+      padding-left: 12px;
+      color: #333;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 43px;
+    }
+    
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+      background-color: var(--primary);
+    }
+    
+    .select2-dropdown {
+      border: 1px solid #ccc;
+      border-radius: 0 0 8px 8px;
+    }
+    
+    .select2-search--dropdown .select2-search__field {
+      padding: 8px;
+      border-radius: 4px;
+    }
+    
+    .select2-container--default .select2-results__option {
+      padding: 8px 12px;
+      color: #333;
+    }
+    
+    .select2-container--open .select2-dropdown {
+      margin-top: 0;
+      color: #333;
+    }
+    
+    .select2-container--default .select2-results > .select2-results__options {
+      max-height: 250px;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: #333;
+    }
+    
+    /* Fixed dropdown issue with Select2 */
+    .select2-container--open .select2-dropdown--below {
+      margin-top: 0px;
+    }
+    
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .action-buttons button {
+      margin-bottom: 0.5rem;
+    }
+    
+    .scan-button {
+      background: #9b59b6;
+      grid-column: span 2;
+    }
+    
+    .scan-button:hover {
+      background: #8e44ad;
+    }
+    
+    .secondary-btn {
+      background: var(--accent);
+    }
+    
+    .secondary-btn:hover {
+      background: #0876c9;
+    }
+    
+    .token-drop-data {
+      font-weight: bold;
+      color: var(--danger);
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 480px) {
+      body {
+        padding: 0.75rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .lang-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.85rem;
+      }
+      
+      input, select, button {
+        font-size: 16px; /* Prevents iOS zoom on focus */
+      }
+      
+      .token-box {
+        padding: 0.8rem;
+      }
+      
+      .level {
+        margin: 0.4rem 0;
+        padding: 0.5rem 0.6rem;
+      }
+      
+      .action-buttons {
+        grid-template-columns: 1fr;
+      }
+      
+      .scan-button {
+        grid-column: 1;
+      }
+    }
+    
+    .token-input-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .token-input-group .form-group {
+      flex: 1;
+      margin-bottom: 0;
     }
   </style>
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -109,38 +489,59 @@
 <body>
   <button class="lang-btn" onclick="toggleLang()">EN/VI</button>
   
-  <h1 id="title">QFL Strategy Tracker</h1>
-  <div id="description">
-    This tool helps track QFL buy zones. Enter a token, set your total investment, and get buy levels based on the base price. Use Kelly to auto-allocate funds.
+  <div class="container">
+    <h1 id="title">QFL Strategy Tracker</h1>
+    <div id="description">
+      This tool helps track QFL buy zones. Enter a token, set your total investment, and get buy levels based on the base price. Use Kelly to auto-allocate funds.
+    </div>
+
+    <div class="token-input-group">
+      <div class="form-group">
+        <label id="manualLabel">Manual Token Input</label>
+        <input type="text" id="manualToken" placeholder="e.g. ARB" />
+      </div>
+      
+      <div class="form-group">
+        <label id="dropdownLabel">Or Select from Binance</label>
+        <div class="select-wrapper">
+          <select id="dropdownToken">
+            <option value="">-- Select pair --</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label id="investLabel">Total Investment ($)</label>
+      <input type="number" id="totalInvest" placeholder="e.g. 1000" inputmode="decimal" />
+    </div>
+
+    <div class="form-group">
+      <label id="layersLabel">Buy Layers</label>
+      <div class="select-wrapper">
+        <select id="buyLayers">
+          <option value="5">All (5 levels)</option>
+          <option value="4">Stop at 20%</option>
+          <option value="3">Stop at 15%</option>
+          <option value="2">Stop at 10%</option>
+          <option value="1">Stop at 5%</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="checkbox-container">
+      <input type="checkbox" id="applyInvest" />
+      <label for="applyInvest" id="kellyLabel">Apply Kelly Allocation</label>
+    </div>
+
+    <div class="action-buttons">
+      <button onclick="addToken()" id="addTokenBtn">Add Token</button>
+      <button onclick="refreshPrices()" id="refreshBtn" class="secondary-btn">Refresh</button>
+      <button onclick="scanAllTokens()" id="scanBtn" class="scan-button">Scan All Tokens</button>
+    </div>
+
+    <div id="tokenList"></div>
   </div>
-
-  <label id="manualLabel">Manual Token Input (ex: ARB)</label>
-  <input type="text" id="manualToken" placeholder="Enter token symbol" />
-
-  <label id="dropdownLabel">Select Binance Spot Pair</label>
-  <select id="dropdownToken">
-    <option value="">-- Select a trading pair --</option>
-  </select>
-
-  <button onclick="addToken()" id="addTokenBtn">Add Token</button>
-
-  <label id="investLabel">Total Investment ($)</label>
-  <input type="number" id="totalInvest" placeholder="e.g. 1000" />
-
-  <label id="layersLabel">Buy Layers</label>
-  <select id="buyLayers">
-    <option value="5">All (5 levels)</option>
-    <option value="4">Stop at 20%</option>
-    <option value="3">Stop at 15%</option>
-    <option value="2">Stop at 10%</option>
-    <option value="1">Stop at 5%</option>
-  </select>
-
-  <label><input type="checkbox" id="applyInvest" /> <span id="kellyLabel">Apply Kelly Allocation</span></label>
-
-  <button onclick="refreshPrices()" id="refreshBtn">Refresh Reports</button>
-
-  <div id="tokenList"></div>
 
   <script>
     let tokens = [];
@@ -151,31 +552,47 @@
       en: {
         title: "QFL Strategy Tracker",
         description: "This tool helps track QFL buy zones. Enter a token, set your total investment, and get buy levels based on the base price. Use Kelly to auto-allocate funds.",
-        manualLabel: "Manual Token Input (ex: ARB)",
-        dropdownLabel: "Select Binance Spot Pair",
+        manualLabel: "Manual Token Input",
+        dropdownLabel: "Or Select from Binance",
         addTokenBtn: "Add Token",
         investLabel: "Total Investment ($)",
         layersLabel: "Buy Layers",
         kellyLabel: "Apply Kelly Allocation",
-        refreshBtn: "Refresh Reports",
-        langBtn: "VI"
+        refreshBtn: "Refresh",
+        scanBtn: "Scan All Tokens",
+        langBtn: "EN/VI",
+        emptyState: "No tokens added yet. Add tokens to see your QFL strategy.",
+        currentPrice: "Current Price",
+        basePrice: "Base Price (90%)",
+        priceScale: "Price Scale",
+        dropPercent: "24h Drop"
       },
       vi: {
         title: "Công Cụ QFL",
         description: "Công cụ theo dõi vùng mua theo QFL. Nhập token, tổng vốn đầu tư, và xem các mức mua từ giá cơ sở. Dùng Kelly để chia vốn tự động.",
-        manualLabel: "Nhập thủ công (ví dụ: ARB)",
-        dropdownLabel: "Chọn cặp Binance Spot",
+        manualLabel: "Nhập thủ công",
+        dropdownLabel: "Hoặc chọn từ Binance",
         addTokenBtn: "Thêm Token",
         investLabel: "Tổng Vốn ($)",
         layersLabel: "Số lớp mua",
         kellyLabel: "Dùng Kelly chia vốn",
         refreshBtn: "Làm mới",
-        langBtn: "EN"
+        scanBtn: "Quét Tất Cả",
+        langBtn: "EN/VI",
+        emptyState: "Chưa có token nào. Thêm token để xem chiến lược QFL.",
+        currentPrice: "Giá hiện tại",
+        basePrice: "Giá cơ sở (90%)",
+        priceScale: "Thang giá",
+        dropPercent: "Giảm 24h"
       }
     };
 
     function toggleLang() {
       currentLang = currentLang === "en" ? "vi" : "en";
+      updateLanguage();
+    }
+    
+    function updateLanguage() {
       const t = text[currentLang];
       document.getElementById("title").textContent = t.title;
       document.getElementById("description").textContent = t.description;
@@ -186,24 +603,43 @@
       document.getElementById("layersLabel").textContent = t.layersLabel;
       document.getElementById("kellyLabel").textContent = t.kellyLabel;
       document.getElementById("refreshBtn").textContent = t.refreshBtn;
+      document.getElementById("scanBtn").textContent = t.scanBtn;
       document.querySelector(".lang-btn").textContent = t.langBtn;
+      
+      renderTokens(); // Re-render tokens with updated language
     }
 
     async function loadPairs() {
-      const res = await fetch("https://api.binance.com/api/v3/exchangeInfo");
-      const data = await res.json();
-      binancePairs = data.symbols
-        .filter(s => s.status === "TRADING" && s.quoteAsset === "USDT")
-        .map(s => s.symbol)
-        .sort();
-      const dropdown = document.getElementById("dropdownToken");
-      binancePairs.forEach(pair => {
-        dropdown.innerHTML += `<option value="${pair}">${pair}</option>`;
-      });
+      try {
+        const res = await fetch("https://api.binance.com/api/v3/exchangeInfo");
+        const data = await res.json();
+        binancePairs = data.symbols
+          .filter(s => s.status === "TRADING" && s.quoteAsset === "USDT")
+          .map(s => ({ symbol: s.symbol, baseAsset: s.baseAsset }))
+          .sort((a, b) => a.baseAsset.localeCompare(b.baseAsset));
+        
+        // Initialize Select2
+        $(document).ready(function() {
+          $('#dropdownToken').select2({
+            placeholder: "Search token...",
+            allowClear: true,
+            data: binancePairs.map(pair => ({
+              id: pair.symbol,
+              text: `${pair.baseAsset}/USDT`
+            })),
+            dropdownParent: $('body')
+          });
+        });
+      } catch (error) {
+        console.error("Error loading Binance pairs:", error);
+        alert("Error loading trading pairs. Please check your connection.");
+      }
     }
 
     function formatPrice(p) {
-      return p >= 0.1 ? p.toFixed(2) : parseFloat(p.toFixed(8)).toString();
+      // For display with consistent decimal places
+      if (p < 0.0001) return p.toFixed(8); // For meme tokens with tiny prices
+      return p.toFixed(4);
     }
 
     function getKellyAllocations(layers) {
@@ -222,45 +658,140 @@
       const kelly = getKellyAllocations(layers);
       return levels.map((pct, i) => {
         const price = base * (1 - pct / 100);
-        const invest = applyKelly && totalInvest > 0 ? ` — Buy: $${(totalInvest * kelly[i]).toFixed(2)}` : '';
-        return `${pct}% → $${formatPrice(price)}${invest}`;
+        const invest = applyKelly && totalInvest > 0 ? `$${(totalInvest * kelly[i]).toFixed(2)}` : '';
+        return {
+          percent: pct,
+          price: price,
+          invest: invest
+        };
       });
     }
 
     async function addToken() {
       const manual = document.getElementById("manualToken").value.trim().toUpperCase();
       const dropdown = document.getElementById("dropdownToken").value;
-      const symbol = dropdown || (manual ? manual + "USDT" : "");
+      let symbol = dropdown;
+      
+      if (!symbol && manual) {
+        symbol = manual + "USDT";
+      }
 
-      if (!symbol || !binancePairs.includes(symbol)) {
-        alert("Invalid token or not listed on Binance.");
+      if (!symbol) {
+        alert(currentLang === "en" ? "Please enter or select a token." : "Vui lòng nhập hoặc chọn token.");
         return;
       }
 
-      if (tokens.find(t => t.symbol === symbol)) {
-        alert("Token already added.");
-        return;
+      try {
+        // Check if it's a valid Binance pair
+        const isValidPair = dropdown || binancePairs.some(p => p.symbol === symbol);
+        
+        if (!isValidPair) {
+          alert(currentLang === "en" ? 
+            "Token not found on Binance. Please select from the dropdown or check your manual input." : 
+            "Không tìm thấy token trên Binance. Vui lòng chọn từ danh sách hoặc kiểm tra token bạn nhập.");
+          return;
+        }
+
+        if (tokens.find(t => t.symbol === symbol)) {
+          alert(currentLang === "en" ? "Token already added." : "Token đã được thêm.");
+          return;
+        }
+
+        const priceRes = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
+        const { price } = await priceRes.json();
+        const currentPrice = parseFloat(price);
+        const base = currentPrice * 0.9;
+
+        const totalInvest = parseFloat(document.getElementById("totalInvest").value) || 0;
+        const layers = parseInt(document.getElementById("buyLayers").value);
+        const applyKelly = document.getElementById("applyInvest").checked;
+
+        const levels = generateBuyLevels(base, layers, totalInvest, applyKelly);
+        const report = {
+          symbol,
+          price: currentPrice,
+          base: base,
+          levels,
+          drop: 0 // Default no drop info
+        };
+
+        tokens.push(report);
+        renderTokens();
+        
+        // Clear inputs
+        document.getElementById("manualToken").value = "";
+        $('#dropdownToken').val(null).trigger('change');
+      } catch (error) {
+        console.error("Error adding token:", error);
+        alert(currentLang === "en" ? 
+          "Error fetching token price. Please try again." : 
+          "Lỗi khi lấy giá token. Vui lòng thử lại.");
       }
+    }
 
-      const priceRes = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
-      const { price } = await priceRes.json();
-      const currentPrice = parseFloat(price);
-      const base = currentPrice * 0.9;
-
-      const totalInvest = parseFloat(document.getElementById("totalInvest").value) || 0;
-      const layers = parseInt(document.getElementById("buyLayers").value);
-      const applyKelly = document.getElementById("applyInvest").checked;
-
-      const levels = generateBuyLevels(base, layers, totalInvest, applyKelly);
-      const report = {
-        symbol,
-        price: currentPrice,
-        base: base,
-        levels
-      };
-
-      tokens.push(report);
-      renderTokens();
+    async function scanAllTokens() {
+      try {
+        // Get top 100 tokens from Binance
+        const tickerRes = await fetch("https://api.binance.com/api/v3/ticker/24hr");
+        const tickerData = await tickerRes.json();
+        
+        // Filter for USDT pairs only and sort by volume
+        const topPairs = tickerData
+          .filter(pair => pair.symbol.endsWith('USDT'))
+          .sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume))
+          .slice(0, 50); // Top 50 by volume
+        
+        const potentialBuys = [];
+        
+        for (const pair of topPairs) {
+          const symbol = pair.symbol;
+          const currentPrice = parseFloat(pair.lastPrice);
+          
+          // Get 24h high price
+          const high24h = parseFloat(pair.highPrice);
+          
+          // Calculate percentage drop from 24h high
+          const dropPercent = ((high24h - currentPrice) / high24h) * 100;
+          
+          // If dropped more than 5%, add to potential buys
+          if (dropPercent >= 5) {
+            const basePrice = currentPrice * 0.9;
+            const layers = 5; // Use all 5 layers
+            const totalInvest = parseFloat(document.getElementById("totalInvest").value) || 1000;
+            const applyKelly = document.getElementById("applyInvest").checked;
+            
+            const levels = generateBuyLevels(basePrice, layers, totalInvest, applyKelly);
+            
+            potentialBuys.push({
+              symbol,
+              price: currentPrice,
+              base: basePrice,
+              drop: dropPercent.toFixed(2),
+              levels
+            });
+          }
+        }
+        
+        // Clear existing tokens and add the new ones
+        tokens = potentialBuys;
+        renderTokens();
+        
+        // Display message about results
+        if (potentialBuys.length === 0) {
+          alert(currentLang === "en" ? 
+            "No tokens with 5% or more drop found." : 
+            "Không tìm thấy token giảm 5% trở lên.");
+        } else {
+          alert(currentLang === "en" ? 
+            `Found ${potentialBuys.length} tokens with 5% or more drop.` : 
+            `Tìm thấy ${potentialBuys.length} token giảm 5% trở lên.`);
+        }
+      } catch (error) {
+        console.error("Error scanning tokens:", error);
+        alert(currentLang === "en" ? 
+          "Error scanning tokens. Please check your connection." : 
+          "Lỗi khi quét token. Vui lòng kiểm tra kết nối của bạn.");
+      }
     }
 
     function deleteToken(symbol) {
@@ -269,46 +800,138 @@
     }
 
     async function refreshPrices() {
+      if (tokens.length === 0) {
+        alert(currentLang === "en" ? 
+          "No tokens to refresh. Add some tokens first." : 
+          "Không có token để làm mới. Hãy thêm token trước.");
+        return;
+      }
+      
       const totalInvest = parseFloat(document.getElementById("totalInvest").value) || 0;
       const layers = parseInt(document.getElementById("buyLayers").value);
       const applyKelly = document.getElementById("applyInvest").checked;
 
-      for (let t of tokens) {
-        const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${t.symbol}`);
-        const data = await res.json();
-        const newPrice = parseFloat(data.price);
-        const newBase = newPrice * 0.9;
-        const newLevels = generateBuyLevels(newBase, layers, totalInvest, applyKelly);
-        t.price = newPrice;
-        t.base = newBase;
-        t.levels = newLevels;
+      try {
+        for (let t of tokens) {
+          const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${t.symbol}`);
+          const data = await res.json();
+          const newPrice = parseFloat(data.price);
+          const newBase = newPrice * 0.9;
+          const newLevels = generateBuyLevels(newBase, layers, totalInvest, applyKelly);
+          t.price = newPrice;
+          t.base = newBase;
+          t.levels = newLevels;
+        }
+        renderTokens();
+      } catch (error) {
+        console.error("Error refreshing prices:", error);
+        alert(currentLang === "en" ? 
+          "Error refreshing prices. Please check your connection." : 
+          "Lỗi khi làm mới giá. Vui lòng kiểm tra kết nối của bạn.");
       }
-      renderTokens();
     }
 
     function renderTokens() {
       const container = document.getElementById("tokenList");
       container.innerHTML = "";
-      tokens.forEach(t => {
+      
+      const t = text[currentLang];
+      
+      if (tokens.length === 0) {
+        container.innerHTML = `<div class="empty-state">${t.emptyState}</div>`;
+        return;
+      }
+      
+      tokens.forEach(token => {
+        const baseAsset = token.symbol.replace('USDT', '');
+        
+        // Calculate price positions for the visual bar
+        const minPrice = token.base * 0.7; // Lowest price on bar (approximately -30%)
+        const maxPrice = token.base * 1.2; // Highest price on bar (+20%)
+        const range = maxPrice - minPrice;
+        
+        // Calculate positions for price markers (as percentage from left)
+        const currentPricePos = Math.min(Math.max(((token.price - minPrice) / range) * 100, 0), 100);
+        const basePricePos = Math.min(Math.max(((token.base - minPrice) / range) * 100, 0), 100);
+        
+        let levelMarkersHTML = '';
+        token.levels.forEach((level, i) => {
+          const levelPos = Math.min(Math.max(((level.price - minPrice) / range) * 100, 0), 100);
+          const levelPercent = [5, 10, 15, 20, 25][i];
+          
+          levelMarkersHTML += `
+            <div class="price-marker level-marker-${levelPercent}" style="left: ${levelPos}%"></div>
+            <div class="price-label level-price-label level-label-${levelPercent}" style="left: ${levelPos}%">
+              ${level.percent}%
+            </div>
+          `;
+        });
+        
+        const dropInfo = token.drop > 0 ? 
+          `<span class="token-drop-data">${t.dropPercent}: ${token.drop}%</span>` : '';
+        
         const box = document.createElement("div");
         box.className = "token-box";
         box.innerHTML = `
-          <button class="delete-btn" onclick="deleteToken('${t.symbol}')">×</button>
+          <button class="delete-btn" onclick="deleteToken('${token.symbol}')">×</button>
           <div class="token-header">
-            <strong>${t.symbol}</strong><br/>
-            Current Price: $${formatPrice(t.price)}<br/>
-            Base Price (90%): $${formatPrice(t.base)}
+            <strong>${baseAsset}/USDT</strong> ${dropInfo}<br/>
+            ${t.currentPrice}: $${formatPrice(token.price)}<br/>
+            ${t.basePrice}: <span class="base-highlight">$${formatPrice(token.base)}</span>
           </div>
+          
+          <div class="price-bar-container">
+            <div class="price-bar"></div>
+            ${levelMarkersHTML}
+            
+            <!-- Base Price Marker -->
+            <div class="price-marker base-price-marker" style="left: ${basePricePos}%"></div>
+            <div class="price-label base-price-label" style="left: ${basePricePos}%">
+              90%: $${formatPrice(token.base)}
+            </div>
+            
+            <!-- Current Price Marker -->
+            <div class="price-marker" style="left: ${currentPricePos}%"></div>
+            <div class="price-label current-price-label" style="left: ${currentPricePos}%">
+              $${formatPrice(token.price)}
+            </div>
+          </div>
+          
           <div class="levels">
-            ${t.levels.map(l => `<div class="level">${l}</div>`).join("")}
+            ${token.levels.map((l, i) => `
+              <div class="level level-${l.percent}">
+                <span class="level-percent">${l.percent}%</span>
+                <span class="level-price">$${formatPrice(l.price)}</span>
+                ${l.invest ? `<span class="level-invest">${l.invest}</span>` : ''}
+              </div>
+            `).join("")}
           </div>
         `;
         container.appendChild(box);
       });
     }
 
+    // Initialize the app
     loadPairs();
+    renderTokens();
+    
+    // Handle Enter key in manual input
+    document.getElementById("manualToken").addEventListener("keyup", function(event) {
+      if (event.key === "Enter") {
+        addToken();
+      }
+    });
+    
+    // Handle Enter key in investment input
+    document.getElementById("totalInvest").addEventListener("keyup", function(event) {
+      if (event.key === "Enter") {
+        if (tokens.length > 0) {
+          refreshPrices();
+        } else {
+          addToken();
+        }
+      }
+    });
   </script>
-
 </body>
 </html>
