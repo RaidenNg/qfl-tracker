@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QFL Strategy Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+      background: #f0fcf9;
+      max-width: 600px;
+      margin: auto;
+      color: #2d3436;
+      position: relative;
+    }
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      color: #00b894;
+      margin-top: 3.5rem !important; /* Reduced from 4rem to fit language button */
+    }
+    #description {
+      font-size: 1rem;
+      text-align: center;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+    .header-container {
+      position: sticky;
+      top: 0;
+      background: #f0fcf9;
+      padding: 0.5rem 0;
+      z-index: 100;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .lang-btn {
+      background: transparent;
+      color: #0984e3;
+      border: 1px solid #0984e3;
+      padding: 0.4rem 0.8rem;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: auto;
+      margin: 0;
+    }
+    .lang-btn:hover {
+      background: #0984e3;
+      color: white;
+    }
+    label, input, select, button {
+      display: block;
+      width: 100%;
+      margin-top: 1rem;
+      font-size: 1.1rem;
+    }
+    input, select {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #00b894;
+      color: white;
+      border: none;
+      padding: 0.7rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #019875;
+    }
+    #scanBtn {
+      background: #0984e3;
+      margin-top: 0.5rem;
+    }
+    #scanBtn:hover {
+      background: #0769b8;
+    }
+    .token-box {
+      position: relative;
+      border: 2px solid #00b894;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
+      background: #fff;
+    }
+    .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: #d63031;
+      color: white;
+      border: none;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1;
+    }
+    .level {
+      background: #dff6f0;
+      display: block;
+      margin: 0.3rem 0;
+      padding: 0.4rem 0.7rem;
+      border-radius: 6px;
+    }
+    .token-header {
+      padding-right: 25px;
+    }
+    .token-main {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .token-symbol {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .token-price {
+      color: #0984e3;
+      font-weight: bold;
+    }
+    .token-change {
+      margin-left: auto;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    .up {
+      color: #00b894;
+      background: rgba(0, 184, 148, 0.1);
+    }
+    .down {
+      color: #d63031;
+      background: rgba(214, 48, 49, 0.1);
+    }
+    .token-base {
+      color: #636e72;
+      font-size: 0.9rem;
+    }
+    .loading {
+      text-align: center;
+      padding: 1rem;
+      color: #636e72;
+    }
+    .inline-check {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .inline-check input {
+      width: auto;
+      margin: 0;
+    }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+<body>
+  <div class="header-container">
+    <button class="lang-btn" onclick="toggleLang()">EN/VI</button>
+  </div>
+  
+  <h1 id="title">QFL Strategy Tracker</h1>
+  <div id="description">
+    This tool helps track QFL buy zones. Enter a token, set your total investment, and get buy levels based on the base price. Use Kelly to auto-allocate funds.
+  </div>
+
+  <label id="manualLabel">Manual Token Input (ex: ARB)</label>
+  <input type="text" id="manualToken" placeholder="Enter token symbol" />
+
+  <label id="dropdownLabel">Select Binance Spot Pair</label>
+  <select id="dropdownToken">
+    <option value="">-- Select a trading pair --</option>
+  </select>
+
+  <button onclick="addToken()" id="addTokenBtn">Add Token</button>
+  <button onclick="scanTokens()" id="scanBtn">Scan All Tokens</button>
+
+  <label id="investLabel">Total Investment ($)</label>
+  <input type="number" id="totalInvest" placeholder="e.g. 1000" />
+
+  <label id="layersLabel">Buy Layers</label>
+  <select id="buyLayers">
+    <option value="5">All (5 levels)</option>
+    <option value="4">Stop at 20%</option>
+    <option value="3">Stop at 15%</option>
+    <option value="2">Stop at 10%</option>
+    <option value="1">Stop at 5%</option>
+  </select>
+
+  <div class="inline-check">
+    <input type="checkbox" id="applyInvest" />
+    <span id="kellyLabel">Apply Kelly Allocation</span>
+  </div>
+
+  <button onclick="refreshPrices()" id="refreshBtn">Refresh Reports</button>
+
+  <div id="tokenList"></div>
+
+  <script>
+    let tokens = [];
+    let binancePairs = [];
+    let currentLang = "en";
+    let isScanning = false;
+
+    const text = {
+      en: {
+        title: "QFL Strategy Tracker",
+        description: "This tool helps track QFL buy zones. Enter a token, set your total investment, and get buy levels based on the base price. Use Kelly to auto-allocate funds.",
+        manualLabel: "Manual Token Input (ex: ARB)",
+        dropdownLabel: "Select Binance Spot Pair",
+        addTokenBtn: "Add Token",
+        scanBtn: "Scan All Tokens",
+        investLabel: "Total Investment ($)",
+        layersLabel: "Buy Layers",
+        kellyLabel: "Apply Kelly Allocation",
+        refreshBtn: "Refresh Reports",
+        langBtn: "VI",
+        scanning: "Scanning tokens...",
+        noMatches: "No tokens found at QFL buy zone.",
+        scanComplete: "Found {0} tokens at QFL buy zones."
+      },
+      vi: {
+        title: "Công Cụ QFL",
+        description: "Công cụ theo dõi vùng mua theo QFL. Nhập token, tổng vốn đầu tư, và xem các mức mua từ giá cơ sở. Dùng Kelly để chia vốn tự động.",
+        manualLabel: "Nhập thủ công (ví dụ: ARB)",
+        dropdownLabel: "Chọn cặp Binance Spot",
+        addTokenBtn: "Thêm Token",
+        scanBtn: "Quét Tất Cả",
+        investLabel: "Tổng Vốn ($)",
+        layersLabel: "Số lớp mua",
+        kellyLabel: "Dùng Kelly chia vốn",
+        refreshBtn: "Làm mới",
+        langBtn: "EN",
+        scanning: "Đang quét các token...",
+        noMatches: "Không tìm thấy token nào ở vùng mua QFL.",
+        scanComplete: "Đã tìm thấy {0} token ở vùng mua QFL."
+      }
+    };
+
+    function toggleLang() {
+      currentLang = currentLang === "en" ? "vi" : "en";
+      const t = text[currentLang];
+      document.getElementById("title").textContent = t.title;
+      document.getElementById("description").textContent = t.description;
+      document.getElementById("manualLabel").textContent = t.manualLabel;
+      document.getElementById("dropdownLabel").textContent = t.dropdownLabel;
+      document.getElementById("addTokenBtn").textContent = t.addTokenBtn;
+      document.getElementById("scanBtn").textContent = t.scanBtn;
+      document.getElementById("investLabel").textContent = t.investLabel;
+      document.getElementById("layersLabel").textContent = t.layersLabel;
+      document.getElementById("kellyLabel").textContent = t.kellyLabel;
+      document.getElementById("refreshBtn").textContent = t.refreshBtn;
+      document.querySelector(".lang-btn").textContent = t.langBtn;
+      renderTokens(); // Re-render to update translations
+    }
+
+    async function loadPairs() {
+      try {
+        const res = await fetch("https://api.binance.com/api/v3/exchangeInfo");
+        const data = await res.json();
+        binancePairs = data.symbols
+          .filter(s => s.status === "TRADING" && s.quoteAsset === "USDT")
+          .map(s => s.symbol)
+          .sort();
+        const dropdown = document.getElementById("dropdownToken");
+        binancePairs.forEach(pair => {
+          dropdown.innerHTML += `<option value="${pair}">${pair}</option>`;
+        });
+        
+        // Initialize Select2 for better dropdown experience
+        $('#dropdownToken').select2({
+          placeholder: "Select a trading pair",
+          allowClear: true
+        });
+      } catch (error) {
+        console.error("Error loading pairs:", error);
+        alert("Failed to load pairs from Binance. Please check your connection and refresh.");
+      }
+    }
+
+    function formatPrice(p) {
+      return p >= 0.1 ? p.toFixed(2) : parseFloat(p.toFixed(8)).toString();
+    }
+
+    function getKellyAllocations(layers) {
+      const reversed = {
+        1: [1],
+        2: [0.4, 0.6],
+        3: [0.2, 0.3, 0.5],
+        4: [0.1, 0.2, 0.3, 0.4],
+        5: [0.08, 0.12, 0.2, 0.25, 0.35]
+      };
+      return reversed[layers];
+    }
+
+    function generateBuyLevels(base, layers, totalInvest = 0, applyKelly = false) {
+      const levels = [5, 10, 15, 20, 25].slice(0, layers);
+      const kelly = getKellyAllocations(layers);
+      return levels.map((pct, i) => {
+        const price = base * (1 - pct / 100);
+        const invest = applyKelly && totalInvest > 0 ? ` — Buy: $${(totalInvest * kelly[i]).toFixed(2)}` : '';
+        return `${pct}% → $${formatPrice(price)}${invest}`;
+      });
+    }
+
+    async function addToken() {
+      const manual = document.getElementById("manualToken").value.trim().toUpperCase();
+      const dropdown = document.getElementById("dropdownToken").value;
+      const symbol = dropdown || (manual ? manual + "USDT" : "");
+
+      if (!symbol || !binancePairs.includes(symbol)) {
+        alert("Invalid token or not listed on Binance.");
+        return;
+      }
+
+      if (tokens.find(t => t.symbol === symbol)) {
+        alert("Token already added.");
+        return;
+      }
+
+      try {
+        const priceRes = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
+        const { price } = await priceRes.json();
+        const currentPrice = parseFloat(price);
+        const base = currentPrice * 0.9;
+
+        const totalInvest = parseFloat(document.getElementById("totalInvest").value) || 0;
+        const layers = parseInt(document.getElementById("buyLayers").value);
+        const applyKelly = document.getElementById("applyInvest").checked;
+
+        const levels = generateBuyLevels(base, layers, totalInvest, applyKelly);
+        const report = {
+          symbol,
+          price: currentPrice,
+          base: base,
+          levels
+        };
+
+        tokens.push(report);
+        renderTokens();
+        
+        // Clear inputs
+        document.getElementById("manualToken").value = "";
+        $('#dropdownToken').val(null).trigger('change');
+      } catch (error) {
+        console.error("Error adding token:", error);
+        alert("Failed to fetch token price. Please try again.");
+      }
+    }
+
+    async function scanTokens() {
+      if (isScanning) return;
+      
+      isScanning = true;
+      const t = text[currentLang];
+      const scanBtn = document.getElementById("scanBtn");
+      const originalBtnText = scanBtn.textContent;
+      scanBtn.textContent = t.scanning;
+      scanBtn.disabled = true;
+      
+      try {
+        // Get prices for all USDT pairs
+        const res = await fetch("https://api.binance.com/api/v3/ticker/price");
+        const allPrices = await res.json();
+        
+        const totalInvest = parseFloat(document.getElementById("totalInvest").value) || 0;
+        const layers = parseInt(document.getElementById("buyLayers").value);
+        const applyKelly = document.getElementById("applyInvest").checked;
+        
+        // Filter to find tokens where price is below base (indicating potential QFL buy zone)
+        const matches = [];
+        for (const item of allPrices) {
+          if (item.symbol.endsWith("USDT") && binancePairs.includes(item.symbol)) {
+            const price = parseFloat(item.price);
+            const base = price / 0.9; // Calculate original base price (assuming current price might be at a drop)
+            
+            // Check if price is below base (in QFL buy zone - between 5% and 25% drop)
+            const priceRatio = price / base;
+            if (priceRatio <= 0.95 && priceRatio >= 0.75) {
+              // Found token in potential buy zone
+              matches.push({
+                symbol: item.symbol,
+                price: price,
+                base: base,
+                dropPercent: ((1 - priceRatio) * 100).toFixed(1)
+              });
+            }
+            
+            // Limit to top 10 results sorted by closest to a buy level
+            if (matches.length >= 30) break;
+          }
+        }
+        
+        // Sort by drop percentage (closest to a buy level)
+        matches.sort((a, b) => {
+          // Get closest buy level
+          const getBuyLevelCloseness = (drop) => {
+            const levels = [5, 10, 15, 20, 25];
+            return Math.min(...levels.map(l => Math.abs(l - drop)));
+          };
+          return getBuyLevelCloseness(parseFloat(a.dropPercent)) - getBuyLevelCloseness(parseFloat(b.dropPercent));
+        });
+        
+        // Take top 5 results
+        const topMatches = matches.slice(0, 5);
+        
+        // Add tokens to the list
+        if (topMatches.length === 0) {
+          alert(t.noMatches);
+        } else {
+          let addedCount = 0;
+          for (const match of topMatches) {
+            if (!tokens.find(t => t.symbol === match.symbol)) {
+              const levels = generateBuyLevels(match.base, layers, totalInvest, applyKelly);
+              tokens.push({
+                symbol: match.symbol,
+                price: match.price,
+                base: match.base,
+                levels: levels
+              });
+              addedCount++;
+            }
+          }
+          renderTokens();
+          alert(t.scanComplete.replace("{0}", addedCount));
+        }
+      } catch (error) {
+        console.error("Error scanning tokens:", error);
+        alert("Failed to scan tokens. Please try again.");
+      } finally {
+        isScanning = false;
+        scanBtn.textContent = originalBtnText;
+        scanBtn.disabled = false;
+      }
+    }
+
+    function deleteToken(symbol) {
+      tokens = tokens.filter(t => t.symbol !== symbol);
+      renderTokens();
+    }
+
+    async function refreshPrices() {
+      const totalInvest = parseFloat(document.getElementById("totalInvest").value) || 0;
+      const layers = parseInt(document.getElementById("buyLayers").value);
+      const applyKelly = document.getElementById("applyInvest").checked;
+
+      try {
+        for (let t of tokens) {
+          const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${t.symbol}`);
+          const data = await res.json();
+          const newPrice = parseFloat(data.price);
+          const newBase = newPrice * 0.9;
+          const newLevels = generateBuyLevels(newBase, layers, totalInvest, applyKelly);
+          t.price = newPrice;
+          t.base = newBase;
+          t.levels = newLevels;
+        }
+        renderTokens();
+      } catch (error) {
+        console.error("Error refreshing prices:", error);
+        alert("Failed to refresh prices. Please try again.");
+      }
+    }
+
+    function renderTokens() {
+      const container = document.getElementById("tokenList");
+      container.innerHTML = "";
+      tokens.forEach(t => {
+        // Calculate price change and determine style
+        const priceChange = ((t.price - t.base) / t.base * 100).toFixed(2);
+        const changeClass = parseFloat(priceChange) < 0 ? "down" : "up";
+        const changeIcon = parseFloat(priceChange) < 0 ? "↓" : "↑";
+        
+        // Strip USDT from display symbol
+        let displaySymbol = t.symbol;
+        if (displaySymbol.endsWith("USDT")) {
+          displaySymbol = displaySymbol.replace("USDT", "");
+        }
+        
+        const box = document.createElement("div");
+        box.className = "token-box";
+        box.innerHTML = `
+          <button class="delete-btn" onclick="deleteToken('${t.symbol}')">×</button>
+          <div class="token-header">
+            <div class="token-main">
+              <div class="token-symbol">${displaySymbol}</div>
+              <div class="token-price">$${formatPrice(t.price)}</div>
+              <div class="token-change ${changeClass}">${changeIcon} ${Math.abs(priceChange)}%</div>
+            </div>
+            <div class="token-base">Base (90%): $${formatPrice(t.base)}</div>
+          </div>
+          <div class="levels">
+            ${t.levels.map(l => `<div class="level">${l}</div>`).join("")}
+          </div>
+        `;
+        container.appendChild(box);
+      });
+    }
+
+    // Initialize on page load
+    loadPairs();
+  </script>
+</body>
+</html>
