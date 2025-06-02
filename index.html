@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Change the page title -->
+    <title>Legendary Journey: The Quest to Conquer Oneself</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            /* App Colors */
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --surface: #ffffff;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+
+            /* Dark Mode Colors */
+            --dark-surface: #1e293b;
+            --dark-bg: #0f172a;
+            --dark-text: #f8fafc;
+            --dark-text-secondary: #94a3b8;
+            --dark-border: #334155;
+
+            /* Font Sizes */
+            --font-xs: 0.75rem;   /* 12px */
+            --font-sm: 0.875rem;  /* 14px */
+            --font-md: 1rem;      /* 16px */
+            --font-lg: 1.125rem;  /* 18px */
+            --font-xl: 1.25rem;   /* 20px */
+            --font-2xl: 1.5rem;   /* 24px */
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: var(--font-md);
+            line-height: 1.5;
+            background: var(--bg);
+            color: var(--text);
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        body.dark-mode {
+            --surface: var(--dark-surface);
+            --bg: var(--dark-bg);
+            --text: var(--dark-text);
+            --text-secondary: var(--dark-text-secondary);
+            --border: var(--dark-border);
+        }
+
+        /* Page Structure */
+        .page {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .page-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: var(--font-2xl);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: var(--font-lg);
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        /* Bottom Navigation */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            display: flex;
+            border-top: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: var(--font-xs);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        /* Forms & Inputs */
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: var(--font-md);
+            margin-bottom: 12px;
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            font-size: var(--font-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .wallet-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wallet-amount {
+            font-size: var(--font-lg);
+            font-weight: 600;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 2px solid var(--border);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Utilities */
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mt-2 {
+            margin-top: 12px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            margin: 60px auto;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Level Progress */
+        .progress-bar {
+            height: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            background: linear-gradient(to right, #4f46e5, #7c3aed);
+        }
+
+        /* Dark mode toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero-banner {
+            background: linear-gradient(to right, var(--surface), rgba(99, 102, 241, 0.1));
+            margin-bottom: 16px;
+        }
+
+        .hero-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .hero-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .hero-name {
+            font-weight: 600;
+            font-size: var(--font-lg);
+        }
+
+        .hero-level {
+            color: var(--text-secondary);
+        }
+
+        .quest-info {
+            text-align: right;
+        }
+
+        .quest-title {
+            color: var(--text-secondary);
+            font-size: var(--font-sm);
+        }
+
+        .quest-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .level-progress {
+            font-size: var(--font-sm);
+        }
+
+        .wallet-progress {
+            height: 8px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: var(--font-xl);
+            }
+
+            .section-title {
+                font-size: var(--font-md);
+            }
+
+            .btn {
+                font-size: var(--font-sm);
+                padding: 10px 14px;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            .wallet-amount {
+                font-size: var(--font-md);
+            }
+
+            /* Hero Section */
+            .hero-banner {
+                padding: 12px;
+            }
+
+            .hero-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .hero-avatar {
+                font-size: 1.5rem;
+            }
+
+            .hero-name {
+                font-size: 1rem;
+            }
+
+            .hero-level {
+                font-size: 0.75rem;
+            }
+
+            /* Wallet Page Specific Styles */
+            #wallets-page .hero-banner {
+                padding: 12px;
+            }
+
+            #wallets-page .hero-avatar {
+                font-size: 1.5rem;
+            }
+
+            #wallets-page .hero-name {
+                font-size: 1rem;
+            }
+
+            #wallets-page .hero-level {
+                font-size: 0.75rem;
+            }
+
+            #wallets-page .quest-title {
+                font-size: 0.8rem;
+            }
+
+            #wallets-page .quest-name {
+                font-size: 0.9rem;
+            }
+        }
+
+</style>
+</head>
+<body>
+    <!-- Wallets Page -->
+    <div id="wallets-page" class="page active">
+        <h1 class="page-title"><i class="fas fa-wallet"></i> Your Arsenal</h1>
+
+        <!-- Add this right after the wallet page title -->
+        <div class="section hero-banner">
+    <div class="hero-header">
+        <div class="hero-info">
+            <div class="hero-avatar" id="hero-avatar">⚔️</div>
+            <div class="hero-details">
+                <div class="hero-name" id="hero-class">Soul Warrior</div>
+                <div class="hero-level">Mastery Level <span id="wallet-hero-level">0</span></div>
+            </div>
+        </div>
+        <div class="quest-info">
+            <div class="quest-title">Inner Challenge:</div>
+            <div class="quest-name" id="current-quest">No active challenge</div>
+        </div>
+    </div>
+    <div class="level-progress">
+        <div class="flex-between" style="margin: 6px 0;">
+            <div>Progress: <span id="wallet-progress-text">$0.00/$25.00</span></div>
+            <div>Next Level: $<span id="wallet-remaining">25.00</span></div>
+        </div>
+        <div class="progress-bar wallet-progress">
+            <div id="wallet-progress-bar" class="progress-fill"></div>
+        </div>
+    </div>
+</div>
+
+        <div class="section">
+            <h2 class="section-title">Manage Your Wallets</h2>
+            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                <button class="btn" onclick="showModal('wallet-modal')" style="flex: 1 1 200px;">
+                    <i class="fas fa-plus"></i> Add New Wallet
+                </button>
+                
+                <button class="btn" onclick="cashoutManager.showModal()" style="flex: 1 1 200px;">
+                    <i class="fas fa-money-bill-wave"></i> Cash Out
+                </button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">My Wallets</h2>
+            <div id="wallets-container" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Wallet cards will be injected here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Add this section for transactions -->
+        <div class="section">
+            <h2 class="section-title">Recent Transactions</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Wallet</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-tbody">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-secondary);">
+                                No transactions yet
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Records Page -->
+    <div id="records-page" class="page">
+        <h1 class="page-title"><i class="fas fa-history"></i> Battle Records</h1>
+        <div class="section">
+            <h2 class="section-title">Add New Record</h2>
+            <div>
+                <label for="record-wallet">Wallet</label>
+                <select id="record-wallet" onchange="recordManager.updateStartAmount()">
+                    <option value="">Select Wallet</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="record-date">Date</label>
+                <input type="date" id="record-date">
+            </div>
+            
+            <div>
+                <label for="record-start">Start Amount</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="number" id="record-start" placeholder="Start Amount" style="flex: 1;">
+                    <button class="btn" onclick="recordManager.useFullAmount()">Use All</button>
+                </div>
+            </div>
+            
+            <div>
+                <label for="record-end">End Amount</label>
+                <input type="number" id="record-end" placeholder="End Amount" 
+                       oninput="recordManager.calculateProfit()">
+            </div>
+            
+            <div>
+                <label for="record-note">Notes (optional)</label>
+                <input type="text" id="record-note" placeholder="Notes (optional)">
+            </div>
+            
+            <div class="flex-between mt-2">
+                <div id="profit-preview"></div>
+                <button class="btn btn-success" onclick="recordManager.add()">
+                    <i class="fas fa-plus"></i> Add Record
+                </button>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Recent Records</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>P/L</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="records-tbody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-secondary);">
+                                No records yet
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Page -->
+    <div id="stats-page" class="page">
+        <h1 class="page-title"><i class="fas fa-chart-bar"></i> Growth Path</h1>
+        <div class="section">
+            <h2 class="section-title">Performance</h2>
+            <div id="stats-container">
+                <div class="flex-between">
+                    <div>Total Bankroll:</div>
+                    <div class="positive">$0.00</div>
+                </div>
+                <div class="flex-between">
+                    <div>Total P/L:</div>
+                    <div class="positive">$0.00</div>
+                </div>
+                <div class="flex-between">
+                    <div>Win Rate:</div>
+                    <div>0.0%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">⚔️ Inner Challenges</h2>
+            <div>
+                <label for="level-difficulty">Choose Your Battle</label>
+                <select id="level-difficulty">
+                    <option value="25">Doubt Wraith Hunt ($25/level)</option>
+                    <option value="50">Fear Ogre Hunt ($50/level)</option>
+                    <option value="100">Impulse Sprite Hunt ($100/level)</option>
+                    <option value="250">Vengeance Minotaur Hunt ($250/level)</option>
+                    <option value="500">Greed Dragon Hunt ($500/level)</option>
+                    <option value="1000">Shadow Demon Hunt ($1000/level)</option>
+                    <option value="10000">Mirror Archon Battle ($10,000/level)</option>
+                </select>
+                <button class="btn btn-success mt-2" onclick="ui.takeQuest()" style="width: 100%;">
+                    <i class="fas fa-scroll"></i> Accept Challenge
+                </button>
+            </div>
+            <div class="flex-between" style="margin: 12px 0;">
+                <div>Level <span id="current-level">0</span></div>
+                <div id="level-progress-text">$0.00/$100.00</div>
+            </div>
+            <div class="progress-bar">
+                <div id="level-progress-bar" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">⚠️ Risk Management</h2>
+            <div>
+                <label for="position-size">Position Size (%)</label>
+                <input type="number" id="position-size" value="1" min="0.1" max="10" step="0.1" 
+                       onchange="settingsManager.updatePositionSize()">
+            </div>
+            <div>
+                <label for="stop-loss">Stop Loss (%)</label>
+                <input type="number" id="stop-loss" value="10" min="1" max="50" step="1"
+                       onchange="settingsManager.updateStopLoss()">
+            </div>
+            <div id="risk-alerts" class="mt-2">
+                <div style="background: rgba(245, 158, 11, 0.1); padding: 12px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.3);">
+                    <div><strong>Next Position Size:</strong> $0.00</div>
+                    <div><strong>Cool-Down Amount:</strong> $0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">💱 Currency Converter</h2>
+            <div>
+                <label for="aud-amount">AUD Amount</label>
+                <input type="number" id="aud-amount" placeholder="Enter AUD" step="0.01" 
+                       onchange="ui.convertCurrency('aud')">
+            </div>
+            <div>
+                <label for="usd-amount">USD Amount</label>
+                <input type="number" id="usd-amount" placeholder="Enter USD" step="0.01"
+                       onchange="ui.convertCurrency('usd')">
+            </div>
+            <div style="text-align: center; margin-top: 12px; color: var(--text-secondary);">
+                Current Rate: 1 AUD = <span id="exchange-rate">0.65</span> USD
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Page -->
+    <div id="data-page" class="page">
+        <h1 class="page-title"><i class="fas fa-save"></i> Adventure Journal</h1>
+        <div class="section" style="background: linear-gradient(to bottom, var(--surface), rgba(99, 102, 241, 0.1));">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-scroll" style="font-size: 36px; color: var(--warning); margin-bottom: 10px;"></i>
+                <p style="font-family: 'Poppins', sans-serif; font-weight: 500; margin-bottom: 16px;">
+                    Record your adventures or load previous quests
+                </p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                <button class="btn" style="width: 220px; background: var(--success);" onclick="dataManager.saveToFile()">
+                    <i class="fas fa-scroll"></i> Save Game Progress
+                </button>
+                
+                <label class="btn" style="width: 220px; margin-bottom: 0; background: var(--primary);">
+                    <i class="fas fa-book-open"></i> Load Saved Game
+                    <input type="file" id="data-load-data" hidden accept=".json" 
+                           onchange="dataManager.loadFromFile(this.files[0])">
+                </label>
+                
+                <button class="btn btn-danger" style="width: 220px;" onclick="dataManager.resetData()">
+                    <i class="fas fa-dice"></i> Start New Adventure
+                </button>
+            </div>
+            
+            <div id="last-backup" style="text-align: center; margin-top: 20px; color: var(--text-secondary); font-style: italic;"></div>
+            
+            <!-- Add adventure tips section -->
+            <div style="margin-top: 30px; padding: 15px; border: 1px dashed var(--border); border-radius: 8px; background: rgba(0,0,0,0.05);">
+                <div style="text-align: center; font-weight: 600; margin-bottom: 10px;">
+                    <i class="fas fa-lightbulb" style="color: var(--warning);"></i> Adventurer's Tips
+                </div>
+                <ul style="padding-left: 20px; font-size: 0.9rem;">
+                    <li>Save your game regularly to prevent losing your progress</li>
+                    <li>Start a new adventure when you want a fresh challenge</li>
+                    <li>Complete higher difficulty quests to level up faster</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Add game achievements section -->
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-trophy"></i> Path to Mastery</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+                <div style="text-align: center; padding: 10px; border-radius: 8px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2);">
+                    <i class="fas fa-coins" style="font-size: 24px; color: var(--warning); margin-bottom: 5px;"></i>
+                    <div style="font-weight: 600; font-size: 0.9rem;">Treasure Hunter</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Reach $1000 in profits</div>
+                </div>
+                
+                <div style="text-align: center; padding: 10px; border-radius: 8px; background: rgba(0, 0, 0, 0.05); border: 1px solid var(--border);">
+                    <i class="fas fa-dragon" style="font-size: 24px; color: var(--text-secondary); margin-bottom: 5px;"></i>
+                    <div style="font-weight: 600; font-size: 0.9rem;">Dragon Slayer</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Locked: Reach Level 10</div>
+                </div>
+                
+                <div style="text-align: center; padding: 10px; border-radius: 8px; background: rgba(0, 0, 0, 0.05); border: 1px solid var(--border);">
+                    <i class="fas fa-crown" style="font-size: 24px; color: var(--text-secondary); margin-bottom: 5px;"></i>
+                    <div style="font-weight: 600; font-size: 0.9rem;">Master Tactician</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Locked: 80% win rate</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="mobile-nav">
+        <a href="#wallets" class="nav-item active" onclick="showPage('wallets')">
+            <i class="fas fa-wallet"></i>
+            <span>Arsenal</span>
+        </a>
+        <a href="#records" class="nav-item" onclick="showPage('records')">
+            <i class="fas fa-history"></i>
+            <span>Battles</span>
+        </a>
+        <a href="#stats" class="nav-item" onclick="showPage('stats')">
+            <i class="fas fa-chart-bar"></i>
+            <span>Growth</span>
+        </a>
+        <a href="#data" class="nav-item" onclick="showPage('data')">
+            <i class="fas fa-scroll"></i>
+            <span>Journal</span>
+        </a>
+    </nav>
+
+    <!-- Wallet Modal -->
+    <div id="wallet-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="section-title">Add New Wallet</h2>
+            <div>
+                <label for="wallet-name">Wallet Name</label>
+                <input type="text" id="wallet-name" placeholder="Enter wallet name">
+            </div>
+            <div>
+                <label for="wallet-amount">Initial Amount</label>
+                <input type="number" id="wallet-amount" placeholder="Enter initial amount" step="0.01">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px;">
+                <button class="btn btn-danger" onclick="hideModal('wallet-modal')">Cancel</button>
+                <button class="btn btn-success" onclick="walletManager.addWallet()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cashout Modal -->
+    <div id="cashout-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="section-title">Cash Out</h2>
+            <div>
+                <label for="cashout-wallet">Select Wallet</label>
+                <select id="cashout-wallet">
+                    <option value="">Select Wallet</option>
+                </select>
+            </div>
+            <div>
+                <label for="cashout-amount">Amount to Withdraw</label>
+                <input type="number" id="cashout-amount" placeholder="Enter amount" step="0.01">
+            </div>
+            <div>
+                <label for="cashout-note">Notes (optional)</label>
+                <input type="text" id="cashout-note" placeholder="Notes (optional)">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px;">
+                <button class="btn btn-danger" onclick="hideModal('cashout-modal')">Cancel</button>
+                <button class="btn btn-success" onclick="cashoutManager.processCashout()">Cash Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Wallet Modal -->
+    <div id="edit-wallet-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="section-title">Edit Wallet</h2>
+            <input type="hidden" id="edit-wallet-id">
+            
+            <!-- Wallet Info Section -->
+            <div>
+                <label for="edit-wallet-name">Wallet Name</label>
+                <input type="text" id="edit-wallet-name" placeholder="Wallet Name">
+            </div>
+            <div>
+                <label for="edit-wallet-current">Current Balance</label>
+                <input type="text" id="edit-wallet-current" readonly>
+            </div>
+            
+            <!-- Operation Tabs -->
+            <div style="display: flex; margin: 16px 0 12px;">
+                <button id="tab-add-remove" class="btn" style="flex: 1; border-radius: 8px 0 0 8px; background: var(--primary);" 
+                        onclick="walletManager.showTab('add-remove')">
+                    Add/Remove Funds
+                </button>
+                <button id="tab-transfer" class="btn" style="flex: 1; border-radius: 0 8px 8px 0; background: var(--text-secondary);" 
+                        onclick="walletManager.showTab('transfer')">
+                    Transfer Funds
+                </button>
+            </div>
+            
+            <!-- Add/Remove Funds Tab -->
+            <div id="add-remove-tab">
+                <div>
+                    <label>Operation</label>
+                    <div style="display: flex; gap: 20px; margin-bottom: 16px;">
+                        <label style="display: inline-flex; align-items: center; gap: 8px;">
+                            <input type="radio" name="edit-wallet-operation" value="add" checked>
+                            Add Funds
+                        </label>
+                        <label style="display: inline-flex; align-items: center; gap: 8px;">
+                            <input type="radio" name="edit-wallet-operation" value="remove">
+                            Remove Funds
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label for="edit-wallet-amount">Amount</label>
+                    <input type="number" id="edit-wallet-amount" placeholder="Enter amount" step="0.01">
+                </div>
+            </div>
+            
+            <!-- Transfer Funds Tab -->
+            <div id="transfer-tab" style="display: none;">
+                <div>
+                    <label for="transfer-to-wallet">Transfer To</label>
+                    <select id="transfer-to-wallet">
+                        <option value="">Select Destination Wallet</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="transfer-amount">Amount to Transfer</label>
+                    <input type="number" id="transfer-amount" placeholder="Enter amount to transfer" step="0.01">
+                </div>
+                <div>
+                    <label for="transfer-note">Note (optional)</label>
+                    <input type="text" id="transfer-note" placeholder="Add a note for this transfer">
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px;">
+                <button class="btn btn-danger" onclick="hideModal('edit-wallet-modal')">Cancel</button>
+                <button id="save-add-remove-btn" class="btn btn-success" onclick="walletManager.updateWalletBalance()">Save</button>
+                <button id="save-transfer-btn" class="btn btn-success" onclick="walletManager.transferFunds()" style="display: none;">Transfer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Record Modal -->
+    <div id="edit-record-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="section-title">Edit Record</h2>
+            <input type="hidden" id="edit-record-id">
+            <div>
+                <label for="edit-record-wallet">Wallet</label>
+                <select id="edit-record-wallet">
+                    <option value="">Select Wallet</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="edit-record-date">Date</label>
+                <input type="date" id="edit-record-date">
+            </div>
+            
+            <div>
+                <label for="edit-record-start">Start Amount</label>
+                <input type="number" id="edit-record-start" placeholder="Start Amount">
+            </div>
+            
+            <div>
+                <label for="edit-record-end">End Amount</label>
+                <input type="number" id="edit-record-end" placeholder="End Amount">
+            </div>
+            
+            <div>
+                <label for="edit-record-note">Notes (optional)</label>
+                <input type="text" id="edit-record-note" placeholder="Notes (optional)">
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px;">
+                <button class="btn btn-danger" onclick="hideModal('edit-record-modal')">Cancel</button>
+                <button class="btn btn-success" onclick="recordManager.saveEdit()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App State and Configuration
+const appState = {
+    wallets: [],
+    records: [],
+    cashouts: [],
+    settings: {
+        positionSize: 1,
+        stopLoss: 10,
+        difficulty: 25
+    }
+};
+
+// Character Profiles
+const characterProfiles = {
+    25: {
+        class: "Novice Adventurer",
+        monster: "🧟 Doubt Wraith",
+        description: "Spectral entity that feeds on hesitation",
+        color: "#10b981"
+    },
+    50: {
+        class: "Brave Warrior",
+        monster: "👹 Fear Ogre",
+        description: "Hulking creature that grows with your anxiety",
+        color: "#3b82f6"
+    },
+    100: {
+        class: "Battle Tactician",
+        monster: "⚡ Impulse Sprite",
+        description: "Fast-moving entity that strikes without warning",
+        color: "#6366f1"
+    },
+    250: {
+        class: "Elite Guardian",
+        monster: "🔄 Vengeance Minotaur",
+        description: "Beast that charges recklessly to recover losses",
+        color: "#8b5cf6"
+    },
+    500: {
+        class: "Mystic Archmage",
+        monster: "🐉 Greed Dragon",
+        description: "Ancient beast that hoards wealth at any cost",
+        color: "#ec4899"
+    },
+    1000: {
+        class: "Legendary Paladin",
+        monster: "👿 Shadow Demon",
+        description: "Dark entity that corrupts rational judgment",
+        color: "#ef4444"
+    },
+    10000: {
+        class: "Divine Champion",
+        monster: "✨ Mirror Archon",
+        description: "The perfect reflection of your ultimate potential",
+        color: "#f59e0b"
+    }
+};
+
+// Utility Functions
+function throttle(func, delay) {
+    let lastCall = 0;
+    return function(...args) {
+        const now = Date.now();
+        if (now - lastCall >= delay) {
+            lastCall = now;
+            return func.apply(this, args);
+        }
+    };
+}
+
+function showPage(page) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    
+    // Show selected page
+    document.getElementById(page + '-page').classList.add('active');
+    
+    // Update nav
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    document.querySelector(`.nav-item[href="#${page}"]`).classList.add('active');
+}
+
+function showModal(id) {
+    document.getElementById(id).style.display = 'block';
+}
+
+function hideModal(id) {
+    document.getElementById(id).style.display = 'none';
+}
+
+// Data Manager
+const dataManager = {
+    saveToLocalStorage() {
+        try {
+            localStorage.setItem('bankrollData', JSON.stringify(appState));
+            localStorage.setItem('lastBackup', new Date().toISOString());
+            console.log('Data saved to localStorage');
+            this.updateLastBackupLabel();
+            return true;
+        } catch (error) {
+            console.error('Error saving to localStorage:', error);
+            return false;
+        }
+    },
+    
+    validateData(data) {
+        return data && 
+               typeof data === 'object' && 
+               (Array.isArray(data.wallets) || data.wallets === undefined) &&
+               (Array.isArray(data.records) || data.records === undefined) &&
+               (Array.isArray(data.cashouts) || data.cashouts === undefined);
+    },
+    
+    loadFromLocalStorage: function() {
+        try {
+            const savedData = localStorage.getItem('bankrollData');
+            if (!savedData) {
+                console.log('No saved data found in localStorage');
+                return false;
+            }
+            
+            const data = JSON.parse(savedData);
+            
+            // Validate data before loading
+            if (!this.validateData(data)) {
+                console.error('Invalid data format in localStorage');
+                return false;
+            }
+            
+            // Apply data to app state with fallbacks for each property
+            appState.wallets = Array.isArray(data.wallets) ? data.wallets : [];
+            appState.records = Array.isArray(data.records) ? data.records : [];
+            appState.cashouts = Array.isArray(data.cashouts) ? data.cashouts : [];
+            
+            // Merge settings with defaults to ensure all settings exist
+            appState.settings = {
+                positionSize: 1,
+                stopLoss: 10,
+                difficulty: 25,
+                ...data.settings
+            };
+            
+            console.log('Data loaded successfully:', {
+                wallets: appState.wallets.length,
+                records: appState.records.length,
+                cashouts: appState.cashouts.length
+            });
+            
+            return true;
+        } catch (error) {
+            console.error('Error loading from localStorage:', error);
+            return false;
+        }
+    },
+    
+    resetData() {
+        if (confirm('Are you sure you want to start a new adventure? All your current progress will be lost!')) {
+            appState.wallets = [{
+                id: Date.now(),
+                name: 'Starting Fund',
+                amount: 0
+            }];
+            appState.records = [];
+            appState.cashouts = [];
+            appState.settings = {
+                positionSize: 1,
+                stopLoss: 10,
+                difficulty: 25
+            };
+            
+            this.saveToLocalStorage();
+            ui.update();
+            alert('Your new adventure begins! Your progress has been reset.');
+        }
+    },
+    
+    saveToFile() {
+        try {
+            const data = JSON.stringify(appState, null, 2);
+            const blob = new Blob([data], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            
+            // Create download links
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bankroll-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Data exported successfully!');
+        } catch (error) {
+            console.error('Error exporting data:', error);
+            alert('Failed to export data. See console for details.');
+        }
+    },
+    
+    loadFromFile(file) {
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                
+                if (!dataManager.validateData(data)) {
+                    throw new Error('Invalid data format in file');
+                }
+                
+                // Apply data
+                appState.wallets = Array.isArray(data.wallets) ? data.wallets : [];
+                appState.records = Array.isArray(data.records) ? data.records : [];
+                appState.cashouts = Array.isArray(data.cashouts) ? data.cashouts : [];
+                appState.settings = {
+                    positionSize: 1,
+                    stopLoss: 10,
+                    difficulty: 25,
+                    ...data.settings
+                };
+                
+                // Update UI
+                ui.update();
+                dataManager.saveToLocalStorage();
+                
+                alert('Data imported successfully!');
+            } catch (error) {
+                console.error('Error importing data:', error);
+                alert('Failed to import data. See console for details.');
+            }
+        };
+        reader.readAsText(file);
+    },
+    
+    updateLastBackupLabel() {
+        const lastBackup = localStorage.getItem('lastBackup');
+        const label = document.getElementById('last-backup');
+        if (label && lastBackup) {
+            label.textContent = `Last backup: ${new Date(lastBackup).toLocaleString()}`;
+        } else if (label) {
+            label.textContent = 'No backups yet';
+        }
+    }
+};
+
+// UI Manager
+const ui = {
+    renderTransactions() {
+        try {
+            const tbody = document.getElementById('transactions-tbody');
+            if (!tbody) return;
+
+            // Get recent transactions only (limit to 20)
+            const transactions = [
+                ...appState.cashouts.map(c => ({
+                    date: new Date(c.date),
+                    id: c.id,
+                    type: 'Withdrawal',
+                    amount: -Math.abs(c.amount),
+                    walletId: c.walletId,
+                    note: c.note?.trim()
+                })),
+                ...appState.records.map(r => ({
+                    date: new Date(r.date),
+                    id: r.id,
+                    type: 'Trade',
+                    amount: r.profit,
+                    walletId: r.walletId,
+                    note: r.note?.trim()
+                }))
+            ]
+            .filter(t => !isNaN(t.date.getTime()))
+            .sort((a, b) => {
+                // First compare by date (newest first)
+                const dateDiff = b.date - a.date;
+                
+                // If dates are the same, sort by ID (newest first)
+                // This ensures consistent ordering for transactions added on the same day
+                if (dateDiff === 0) {
+                    return b.id - a.id;
+                }
+                
+                return dateDiff;
+            })
+            .slice(0, 20); // Only show recent 20 transactions
+
+            if (transactions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-secondary);">
+                            No transactions yet
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            // Build HTML once instead of joining array
+            let html = '';
+            for (const t of transactions) {
+                const wallet = appState.wallets.find(w => w.id === t.walletId);
+                const walletName = wallet?.name || 'Deleted Wallet';
+                
+                html += `
+                    <tr>
+                        <td>${t.date.toLocaleDateString()}</td>
+                        <td>${walletName}</td>
+                        <td>${t.type}</td>
+                        <td class="${t.amount >= 0 ? 'positive' : 'negative'}">
+                            ${t.amount >= 0 ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}
+                            ${t.note ? `<br><small style="color: var(--text-secondary)">${t.note}</small>` : ''}
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            tbody.innerHTML = html;
+        } catch (error) {
+            console.error('Error rendering transactions:', error);
+            if (tbody) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--danger);">
+                            Error loading transactions
+                        </td>
+                    </tr>`;
+            }
+        }
+    },
+
+    takeQuest() {
+        try {
+            const difficulty = parseInt(document.getElementById('level-difficulty').value) || 25;
+            const profile = characterProfiles[difficulty];
+            
+            // Update settings
+            appState.settings.difficulty = difficulty;
+            dataManager.saveToLocalStorage();
+            
+            // Create quest acceptance animation
+            const questAlert = document.createElement('div');
+            const animationId = 'quest-animation-' + Date.now();
+            
+            // Create and append style element with unique ID
+            const styleElement = document.createElement('style');
+            styleElement.id = animationId;
+            styleElement.textContent = `
+                @keyframes questAccept {
+                    0% { opacity: 0; transform: translate(-50%, -30%); }
+                    20% { opacity: 1; transform: translate(-50%, -50%); }
+                    80% { opacity: 1; transform: translate(-50%, -50%); }
+                    100% { opacity: 0; transform: translate(-50%, -70%); }
+                }
+            `;
+            document.head.appendChild(styleElement);
+            
+            questAlert.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.9);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                text-align: center;
+                z-index: 1000;
+                animation: questAccept 2s forwards;
+            `;
+            
+            questAlert.innerHTML = `
+    <div style="font-size: 24px; margin-bottom: 10px;">⚔️ Challenge Accepted! ⚔️</div>
+    <div style="font-size: 18px; color: white; background: ${profile.color}; padding: 8px; border-radius: 4px;">
+        ${profile.class}
+    </div>
+    <div style="margin-top: 10px;">
+        <div>${profile.monster} - ${profile.description}</div>
+        <div style="margin-top: 5px;">Reward: $${difficulty} per mastery level</div>
+    </div>
+`;
+            
+            document.body.appendChild(questAlert);
+            
+            // Remove alert and style after animation
+            setTimeout(() => {
+                document.body.removeChild(questAlert);
+                const styleToRemove = document.getElementById(animationId);
+                if (styleToRemove) document.head.removeChild(styleToRemove);
+            }, 2000);
+            
+            // Update displays
+            this.updateLevelProgress();
+            this.updateWalletHeroDisplay();
+            
+        } catch (error) {
+            console.error('Error taking quest:', error);
+        }
+    },
+    
+    update: throttle(function() {
+        this.renderWallets();
+        this.updateWalletSelects();
+        this.renderTransactions();
+        this.renderRecords(); // Add this line to call the renderRecords function
+        this.updateStats();
+        this.updateWalletHeroDisplay();
+        this.updateLevelProgress();
+    }, 100),
+    
+    updateWalletHeroDisplay: function() {
+        try {
+            // Calculate total profit from all records instead of total bankroll
+            const totalProfit = appState.records.reduce((sum, r) => sum + (r.profit || (r.end - r.start)), 0);
+            const difficulty = appState.settings.difficulty || 25;
+            
+            // Calculate level based on profit divided by difficulty
+            // Use Math.max to ensure level is at least 1, and Math.floor to get whole levels
+            const level = Math.max(1, Math.floor(Math.abs(totalProfit) / difficulty));
+            
+            // Update level display
+            document.getElementById('wallet-hero-level').textContent = level;
+            
+            // Update progress text
+            document.getElementById('wallet-progress-text').textContent = 
+                `$${Math.abs(totalProfit).toFixed(2)}/$${(level * difficulty).toFixed(2)}`;
+            
+            // Calculate remaining amount needed for next level
+            const remaining = ((level + 1) * difficulty) - Math.abs(totalProfit);
+            document.getElementById('wallet-remaining').textContent = remaining.toFixed(2);
+            
+            // Calculate progress percentage toward next level
+            const progress = ((Math.abs(totalProfit) % difficulty) / difficulty) * 100;
+            document.getElementById('wallet-progress-bar').style.width = `${progress}%`;
+            
+            // Update character class based on difficulty
+            const profile = characterProfiles[difficulty];
+            if (profile) {
+                document.getElementById('hero-class').textContent = profile.class;
+                document.getElementById('current-quest').textContent = profile.monster + " Hunt";
+            }
+        } catch (error) {
+            console.error('Error updating wallet hero display:', error);
+        }
+    },
+    
+    updateLevelProgress: function() {
+        try {
+            // Calculate total profit instead of bankroll
+            const totalProfit = appState.records.reduce((sum, r) => sum + (r.profit || (r.end - r.start)), 0);
+            const difficulty = appState.settings.difficulty || 25;
+            
+            // Calculate level based on absolute profit value
+            const level = Math.max(1, Math.floor(Math.abs(totalProfit) / difficulty));
+            
+            // Update UI elements
+            document.getElementById('current-level').textContent = level;
+            document.getElementById('level-progress-text').textContent = 
+                `$${Math.abs(totalProfit).toFixed(2)}/$${(level * difficulty).toFixed(2)}`;
+            
+            // Calculate and update progress bar
+            const progress = ((Math.abs(totalProfit) % difficulty) / difficulty) * 100;
+            document.getElementById('level-progress-bar').style.width = `${progress}%`;
+        } catch (error) {
+            console.error('Error updating level progress:', error);
+        }
+    },
+    
+    renderWallets() {
+        const container = document.getElementById('wallets-container');
+        if (!container) return;
+        
+        if (appState.wallets.length === 0) {
+            container.innerHTML = '<div style="text-align: center; color: var(--text-secondary);">No wallets yet</div>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        appState.wallets.forEach(wallet => {
+            const card = document.createElement('div');
+            card.className = 'card wallet-card';
+            card.innerHTML = `
+                <div>
+                    <div class="card-title">${wallet.name}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.8rem;">
+                        Wallet ID: ${wallet.id}
+                    </div>
+                </div>
+                <div class="wallet-amount ${wallet.amount >= 0 ? 'positive' : 'negative'}">
+                    $${wallet.amount.toFixed(2)}
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-primary btn-small" onclick="walletManager.editWallet(${wallet.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger btn-small" onclick="walletManager.deleteWallet(${wallet.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    },
+    
+    updateWalletSelects() {
+        // Update wallet dropdown selectors
+        const selectors = ['record-wallet', 'cashout-wallet', 'edit-record-wallet'];
+        
+        selectors.forEach(id => {
+            const select = document.getElementById(id);
+            if (!select) return;
+            
+            // Save current selection
+            const currentValue = select.value;
+            
+            // Clear and rebuild options
+            select.innerHTML = '<option value="">Select Wallet</option>';
+            
+            appState.wallets.forEach(wallet => {
+                const option = document.createElement('option');
+                option.value = wallet.id;
+                option.textContent = `${wallet.name} ($${wallet.amount.toFixed(2)})`;
+                select.appendChild(option);
+            });
+            
+            // Restore selection if possible
+            if (currentValue && appState.wallets.some(w => w.id == currentValue)) {
+                select.value = currentValue;
+            }
+        });
+    },
+    
+    updateStats() {
+        try {
+            const totalBankroll = appState.wallets.reduce((sum, w) => sum + w.amount, 0);
+            
+            // Calculate total profit from records, not from initial wallet
+            const totalProfit = appState.records.reduce((sum, r) => sum + (r.profit || (r.end - r.start)), 0);
+            
+            // Count wins and losses
+            const wins = appState.records.filter(r => (r.profit || (r.end - r.start)) > 0).length;
+            const losses = appState.records.filter(r => (r.profit || (r.end - r.start)) < 0).length;
+            const winRate = wins + losses > 0 ? (wins / (wins + losses) * 100).toFixed(1) : 0;
+            
+            // Update stats display
+            const statsContainer = document.getElementById('stats-container');
+            if (statsContainer) {
+                statsContainer.innerHTML = `
+                    <div class="flex-between">
+                        <div>Total Bankroll:</div>
+                        <div class="${totalBankroll >= 0 ? 'positive' : 'negative'}">$${totalBankroll.toFixed(2)}</div>
+                    </div>
+                    <div class="flex-between">
+                        <div>Total P/L:</div>
+                        <div class="${totalProfit >= 0 ? 'positive' : 'negative'}">
+                            ${totalProfit >= 0 ? '+' : ''}$${totalProfit.toFixed(2)}
+                        </div>
+                    </div>
+                    <div class="flex-between">
+                        <div>Win Rate:</div>
+                        <div>${winRate}% (${wins}W / ${losses}L)</div>
+                    </div>
+                `;
+            }
+            
+            // Update risk alerts based on total profit
+            this.updateRiskAlerts(totalBankroll, totalProfit);
+        } catch (error) {
+            console.error('Error updating stats:', error);
+        }
+    },
+    
+    updateRiskAlerts(totalBankroll, totalProfit) {
+        try {
+            const positionSize = parseFloat(document.getElementById('position-size').value) || 1;
+            const stopLoss = parseFloat(document.getElementById('stop-loss').value) || 10;
+            
+            const nextPosition = totalBankroll * (positionSize / 100);
+            const coolDown = totalBankroll * (stopLoss / 100);
+            
+            // Calculate profit percentage against total bankroll
+            const profitPercentage = totalBankroll > 0 ? (totalProfit / totalBankroll) * 100 : 0;
+            
+            const alertsContainer = document.getElementById('risk-alerts');
+            if (alertsContainer) {
+                const alertClass = profitPercentage < -stopLoss ? 
+                    'background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);' : 
+                    'background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);';
+                
+                alertsContainer.innerHTML = `
+                    <div style="${alertClass} padding: 12px; border-radius: 8px;">
+                        <div><strong>Next Position Size:</strong> $${nextPosition.toFixed(2)}</div>
+                        <div><strong>Cool-Down Amount:</strong> $${coolDown.toFixed(2)}</div>
+                        ${profitPercentage < -stopLoss ? 
+                            '<div class="negative" style="margin-top: 8px;"><strong>⚠️ STOP LOSS REACHED!</strong></div>' : ''}
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error updating risk alerts:', error);
+        }
+    },
+    
+    convertCurrency(from) {
+        try {
+            // Hard-coded exchange rate (in a real app, this would come from an API)
+            const rate = 0.65; // 1 AUD = 0.65 USD
+            
+            if (from === 'aud') {
+                const aud = parseFloat(document.getElementById('aud-amount').value) || 0;
+                document.getElementById('usd-amount').value = (aud * rate).toFixed(2);
+            } else {
+                const usd = parseFloat(document.getElementById('usd-amount').value) || 0;
+                document.getElementById('aud-amount').value = (usd / rate).toFixed(2);
+            }
+        } catch (error) {
+            console.error('Error converting currency:', error);
+        }
+    },
+    
+    renderRecords() {
+        try {
+            const tbody = document.getElementById('records-tbody');
+            if (!tbody) return;
+            
+            if (!appState.records || appState.records.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-secondary);">
+                            No records yet
+                        </td>
+                    </tr>`;
+                return;
+            }
+            
+            // Sort records by date (newest first)
+            const sortedRecords = [...appState.records].sort((a, b) => {
+                // First compare by date (newest first)
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                const dateDiff = dateB - dateA;
+                
+                // If dates are the same, sort by ID (newest first)
+                // This ensures consistent ordering for records added on the same day
+                if (dateDiff === 0) {
+                    return b.id - a.id;
+                }
+                
+                return dateDiff;
+            });
+            
+            tbody.innerHTML = '';
+            sortedRecords.forEach(record => {
+                const wallet = appState.wallets.find(w => w.id == record.walletId);
+                const walletName = wallet ? wallet.name : 'Deleted Wallet';
+                const profit = record.profit || (record.end - record.start);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(record.date).toLocaleDateString()} - ${walletName}</td>
+                    <td>$${record.start.toFixed(2)}</td>
+                    <td>$${record.end.toFixed(2)}</td>
+                    <td class="${profit >= 0 ? 'positive' : 'negative'}">
+                        ${profit >= 0 ? '+' : ''}$${Math.abs(profit).toFixed(2)}
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-small" onclick="recordManager.editRecord(${record.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-small" onclick="recordManager.deleteRecord(${record.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error rendering records:', error);
+        }
+    }
+};
+
+// Wallet Manager
+const walletManager = {
+    addWallet() {
+        const name = document.getElementById('wallet-name').value.trim();
+        const amount = parseFloat(document.getElementById('wallet-amount').value);
+        
+        if (!name) {
+            alert('Please enter a wallet name');
+            return;
+        }
+        
+        if (isNaN(amount)) {
+            alert('Please enter a valid amount');
+            return;
+        }
+        
+        appState.wallets.push({
+            id: Date.now(),
+            name: name,
+            amount: amount
+        });
+        
+        // Reset form
+        document.getElementById('wallet-name').value = '';
+        document.getElementById('wallet-amount').value = '';
+        
+        // Close modal
+        hideModal('wallet-modal');
+        
+        // Update UI
+        ui.update();
+        
+        // Save data
+        dataManager.saveToLocalStorage();
+    },
+    
+    showTab(tab) {
+        // Update tab button styles
+        document.getElementById('tab-add-remove').style.background = 
+            tab === 'add-remove' ? 'var(--primary)' : 'var(--text-secondary)';
+        document.getElementById('tab-transfer').style.background = 
+            tab === 'transfer' ? 'var(--primary)' : 'var(--text-secondary)';
+        
+        // Show/hide content
+        document.getElementById('add-remove-tab').style.display = 
+            tab === 'add-remove' ? 'block' : 'none';
+        document.getElementById('transfer-tab').style.display = 
+            tab === 'transfer' ? 'block' : 'none';
+        
+        // Show/hide action buttons
+        document.getElementById('save-add-remove-btn').style.display = 
+            tab === 'add-remove' ? 'inline-flex' : 'none';
+        document.getElementById('save-transfer-btn').style.display = 
+            tab === 'transfer' ? 'inline-flex' : 'none';
+    },
+    
+    editWallet(id) {
+        const wallet = appState.wallets.find(w => w.id === id);
+        if (!wallet) return;
+        
+        // Populate edit form
+        document.getElementById('edit-wallet-id').value = wallet.id;
+        document.getElementById('edit-wallet-name').value = wallet.name;
+        document.getElementById('edit-wallet-current').value = `$${wallet.amount.toFixed(2)}`;
+        document.getElementById('edit-wallet-amount').value = '';
+        document.getElementById('transfer-amount').value = '';
+        document.getElementById('transfer-note').value = '';
+        
+        // Reset to add/remove tab
+        this.showTab('add-remove');
+        
+        // Populate transfer-to-wallet dropdown (exclude current wallet)
+        const transferSelect = document.getElementById('transfer-to-wallet');
+        transferSelect.innerHTML = '<option value="">Select Destination Wallet</option>';
+        
+        appState.wallets.forEach(w => {
+            if (w.id !== id) {
+                const option = document.createElement('option');
+                option.value = w.id;
+                option.textContent = `${w.name} ($${w.amount.toFixed(2)})`;
+                transferSelect.appendChild(option);
+            }
+        });
+        
+        // Show modal
+        showModal('edit-wallet-modal');
+    },
+    
+    updateWalletBalance() {
+        const id = parseInt(document.getElementById('edit-wallet-id').value);
+        const amount = parseFloat(document.getElementById('edit-wallet-amount').value);
+        const operation = document.querySelector('input[name="edit-wallet-operation"]:checked').value;
+        
+        if (isNaN(amount) || amount <= 0) {
+            alert('Please enter a valid amount');
+            return;
+        }
+        
+        const wallet = appState.wallets.find(w => w.id === id);
+        if (!wallet) return;
+        
+        const oldAmount = wallet.amount;
+        
+        if (operation === 'add') {
+            wallet.amount += amount;
+        } else {
+            if (amount > wallet.amount) {
+                alert('Insufficient funds in wallet');
+                return;
+            }
+            wallet.amount -= amount;
+        }
+        
+        // Add a record for this transaction
+        appState.records.push({
+            id: Date.now(),
+            walletId: id,
+            date: new Date().toISOString().split('T')[0],
+            start: oldAmount,
+            end: wallet.amount,
+            profit: operation === 'add' ? amount : -amount,
+            note: operation === 'add' ? 'Added funds' : 'Withdrew funds'
+        });
+        
+        // Close modal
+        hideModal('edit-wallet-modal');
+        
+        // Update UI
+        ui.update();
+        
+        // Save data
+        dataManager.saveToLocalStorage();
+    },
+    
+    transferFunds() {
+        const sourceId = parseInt(document.getElementById('edit-wallet-id').value);
+        const targetId = parseInt(document.getElementById('transfer-to-wallet').value);
+        const amount = parseFloat(document.getElementById('transfer-amount').value);
+        const note = document.getElementById('transfer-note').value.trim();
+        
+        // Validate inputs
+        if (!targetId) {
+            alert('Please select a destination wallet');
+            return;
+        }
+        
+        if (isNaN(amount) || amount <= 0) {
+            alert('Please enter a valid amount to transfer');
+            return;
+        }
+        
+        // Get source and target wallets
+        const sourceWallet = appState.wallets.find(w => w.id === sourceId);
+        const targetWallet = appState.wallets.find(w => w.id === targetId);
+        
+        if (!sourceWallet || !targetWallet) {
+            alert('Wallet not found');
+            return;
+        }
+        
+        // Check if source has enough funds
+        if (amount > sourceWallet.amount) {
+            alert('Insufficient funds for transfer');
+            return;
+        }
+        
+        // Process the transfer
+        const today = new Date().toISOString().split('T')[0];
+        const timestamp = Date.now();
+        
+        // Update wallet balances
+        const oldSourceAmount = sourceWallet.amount;
+        const oldTargetAmount = targetWallet.amount;
+        
+        sourceWallet.amount -= amount;
+        targetWallet.amount += amount;
+        
+        // Add record for source wallet (negative amount)
+        appState.records.push({
+            id: timestamp,
+            walletId: sourceId,
+            date: today,
+            start: oldSourceAmount,
+            end: sourceWallet.amount,
+            profit: -amount,
+            note: `Transfer to ${targetWallet.name}${note ? ': ' + note : ''}`
+        });
+        
+        // Add record for target wallet (positive amount)
+        appState.records.push({
+            id: timestamp + 1, // Ensure unique ID
+            walletId: targetId,
+            date: today,
+            start: oldTargetAmount,
+            end: targetWallet.amount,
+            profit: amount,
+            note: `Transfer from ${sourceWallet.name}${note ? ': ' + note : ''}`
+        });
+        
+        // Close modal
+        hideModal('edit-wallet-modal');
+        
+        // Update UI
+        ui.update();
+        
+        // Save data
+        dataManager.saveToLocalStorage();
+        
+        // Show confirmation
+        alert(`Successfully transferred $${amount.toFixed(2)} to ${targetWallet.name}`);
+    }
+};
+
+// Record Manager
+const recordManager = {
+    add() {
+        const walletId = document.getElementById('record-wallet').value;
+        const date = document.getElementById('record-date').value;
+        const start = parseFloat(document.getElementById('record-start').value);
+        const end = parseFloat(document.getElementById('record-end').value);
+        const note = document.getElementById('record-note').value.trim();
+        
+        // Validate inputs
+        if (!walletId) {
+            alert('Please select a wallet');
+            return;
+        }
+        
+        if (!date) {
+            alert('Please select a date');
+            return;
+        }
+        
+        if (isNaN(start) || start < 0) {
+            alert('Please enter a valid start amount');
+            return;
+        }
+        
+        if (isNaN(end)) {
+            alert('Please enter a valid end amount');
+            return;
+        }
+        
+        // Add record
+        const profit = end - start;
+        
+        // Update wallet balance
+        const wallet = appState.wallets.find(w => w.id == walletId);
+        if (wallet) {
+            wallet.amount = end;
+        }
+        
+        // Add record to state
+        appState.records.push({
+            id: Date.now(),
+            walletId: parseInt(walletId),
+            date: date,
+            start: start,
+            end: end,
+            profit: profit,
+            note: note
+        });
+        
+        // Clear form
+        document.getElementById('record-end').value = '';
+        document.getElementById('record-note').value = '';
+        document.getElementById('profit-preview').textContent = '';
+        
+        // Update UI
+        ui.update();
+        
+        // Save data
+        dataManager.saveToLocalStorage();
+        
+        // Show confirmation
+        alert('Record added successfully!');
+    },
+    
+    updateStartAmount() {
+        const walletId = document.getElementById('record-wallet').value;
+        if (!walletId) return;
+        
+        const wallet = appState.wallets.find(w => w.id == walletId);
+        if (wallet) {
+            document.getElementById('record-start').value = wallet.amount.toFixed(2);
+        }
+    },
+    
+    useFullAmount() {
+        const walletId = document.getElementById('record-wallet').value;
+        if (!walletId) {
+            alert('Please select a wallet first');
+            return;
+        }
+        
+        const wallet = appState.wallets.find(w => w.id == walletId);
+        if (wallet) {
+            document.getElementById('record-start').value = wallet.amount.toFixed(2);
+        }
+    },
+    
+    calculateProfit() {
+        const start = parseFloat(document.getElementById('record-start').value) || 0;
+        const end = parseFloat(document.getElementById('record-end').value) || 0;
+        const profit = end - start;
+        
+        const preview = document.getElementById('profit-preview');
+        if (preview) {
+            if (!isNaN(profit)) {
+                preview.textContent = `Profit/Loss: ${profit >= 0 ? '+' : ''}$${profit.toFixed(2)}`;
+                preview.className = profit >= 0 ? 'positive' : 'negative';
+            } else {
+                preview.textContent = '';
+            }
+        }
+    },
+    
+    editRecord(id) {
+        const record = appState.records.find(r => r.id === id);
+        if (!record) return;
+        
+        // Populate edit form
+        document.getElementById('edit-record-id').value = record.id;
+        document.getElementById('edit-record-wallet').value = record.walletId;
+        document.getElementById('edit-record-date').value = record.date;
+        document.getElementById('edit-record-start').value = record.start.toFixed(2);
+        document.getElementById('edit-record-end').value = record.end.toFixed(2);
+        document.getElementById('edit-record-note').value = record.note || '';
+        
+        // Show modal
+        showModal('edit-record-modal');
+    },
+    
+    saveEdit() {
+        const id = parseInt(document.getElementById('edit-record-id').value);
+        const walletId = parseInt(document.getElementById('edit-record-wallet').value);
+        const date = document.getElementById('edit-record-date').value;
+        const start = parseFloat(document.getElementById('edit-record-start').value);
+        const end = parseFloat(document.getElementById('edit-record-end').value);
+        const note = document.getElementById('edit-record-note').value.trim();
+        
+        // Validate inputs
+        if (!walletId) {
+            alert('Please select a wallet');
+            return;
+        }
+        
+        if (!date) {
+            alert('Please select a date');
+            return;
+        }
+        
+        if (isNaN(start) || start < 0) {
+            alert('Please enter a valid start amount');
+            return;
+        }
+        
+        if (isNaN(end)) {
+            alert('Please enter a valid end amount');
+            return;
+        }
+        
+        // Find record
+        const record = appState.records.find(r => r.id === id);
+        if (!record) return;
+        
+        // Get original wallet
+        const originalWallet = appState.wallets.find(w => w.id === record.walletId);
+        
+        // Update record
+        record.walletId = walletId;
+        record.date = date;
+        record.start = start;
+        record.end = end;
+        record.profit = end - start;
+        record.note = note;
+        
+        // Update wallet balance if this was the most recent record for this wallet
+        if (originalWallet) {
+            // Get the most recent record for the original wallet
+            const latestRecord = [...appState.records]
+                .filter(r => r.walletId === originalWallet.id)
+                .sort((a, b) => {
+                    // First sort by date (newest first)
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    const dateDiff = dateB - dateA;
+                    
+                    // If dates are the same, sort by ID (newest first)
+                    // This ensures consistent ordering for records added on the same day
+                    if (dateDiff === 0) {
+                        return b.id - a.id;
+                    }
+                    
+                    return dateDiff;
+                })[0];
+            
+            // If this was the latest record, update the wallet amount
+            if (latestRecord && latestRecord.id === id) {
+                originalWallet.amount = end;
+            }
+        }
+        
+        // Close modal
+        hideModal('edit-record-modal');
+        
+        // Update UI
+        ui.update();
+        
+        // Save data
+        dataManager.saveToLocalStorage();
+    },
+    
+    deleteRecord(id) {
+        if (!confirm('Are you sure you want to delete this record?')) {
+            return;
+        }
+        
+        const index = appState.records.findIndex(r => r.id === id);
+        if (index === -1) return;
+        
+        appState.records.splice(index, 1);
+        
+        // Update UI
+        ui.update();
+        
+        // Save data
+        dataManager.saveToLocalStorage();
+    }
+};
+
+// Cashout Manager
+const cashoutManager = {
+    showModal() {
+        // Populate cashout wallet dropdown
+        const select = document.getElementById('cashout-wallet');
+        select.innerHTML = '<option value="">Select Wallet</option>';
+        
+        appState.wallets.forEach(wallet => {
+            const option = document.createElement('option');
+            option.value = wallet.id;
+            option.textContent = `${wallet.name} ($${wallet.amount.toFixed(2)})`;
+            select.appendChild(option);
+        });
+        
+        // Clear fields
+        document.getElementById('cashout-amount').value = '';
+        document.getElementById('cashout-note').value = '';
+        
+        // Show modal
+        showModal('cashout-modal');
+    },
+    
+    processCashout() {
+        const walletId = parseInt(document.getElementById('cashout-wallet').value);
+        const amount = parseFloat(document.getElementById('cashout-amount').value);
+        const note = document.getElementById('cashout-note').value.trim();
+        
+        // Validate inputs
+        if (!walletId) {
+            alert('Please select a wallet');
+            return;
+        }
+        
+        if (isNaN(amount) || amount <= 0) {
+            alert('Please enter a valid amount');
+            return;
+        }
+        
+        // Find wallet
+        const wallet = appState.wallets.find(w => w.id === walletId);
+        if (!wallet) {
+            alert('Wallet not found');
+            return;
+        }
+        
+        // Check if wallet has enough funds
+        if (amount > wallet.amount) {
+            alert('Insufficient funds in wallet');
+            return;
+        }
+        
+        // Process cashout
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Update wallet
+        const oldAmount = wallet.amount;
+        wallet.amount -= amount;
+        
+        // Add cashout record
+        appState.cashouts.push({
+            id: Date.now(),
+            walletId: walletId,
+            date: today,
+            amount: amount,
+            note: note
+        });
+        
+        // Add record for this transaction
+        appState.records.push({
+            id: Date.now() + 1,
+            walletId: walletId,
+            date: today,
+            start: oldAmount,
+            end: wallet.amount,
+            profit: -amount,
+            note: `Cash out${note ? ': ' + note : ''}`
+        });
+        
+        // Close modal
+        hideModal('cashout-modal');
+        
+        // Update UI
+        ui.update();
+        
+        // Save data
+        dataManager.saveToLocalStorage();
+        
+        // Show confirmation
+        alert(`Successfully cashed out $${amount.toFixed(2)} from ${wallet.name}`);
+    }
+};
+
+// Initialize the app on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Try to load data from localStorage
+    const dataLoaded = dataManager.loadFromLocalStorage();
+    
+    // If no data was loaded, initialize with a default wallet
+    if (!dataLoaded && appState.wallets.length === 0) {
+        appState.wallets.push({
+            id: Date.now(),
+            name: 'Starting Fund',
+            amount: 0
+        });
+        dataManager.saveToLocalStorage();
+    }
+    
+    // Update the UI with loaded data
+    ui.update();
+    
+    // Set today's date as default for the record date field
+    const today = new Date().toISOString().split('T')[0];
+    const datePickers = document.querySelectorAll('input[type="date"]');
+    datePickers.forEach(picker => {
+        if (!picker.value) {
+            picker.value = today;
+        }
+    });
+    
+    // Check for and update last backup label
+    dataManager.updateLastBackupLabel();
+});
+    </script>
+</body>
+</html>
