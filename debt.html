@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debt Quest</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2e7d32;      /* Green */
+            --danger-color: #c62828;
+            --success-color: #43a047;
+            --warning-color: #fbc02d;
+            --info-color: #388e3c;
+            --bg-color: #e8f5e9;          /* Light green */
+            --card-bg: #ffffff;
+            --text-color: #1b3c1b;
+            --text-muted: #5a7d5a;
+            --border-color: #a5d6a7;
+            --header-gradient: linear-gradient(135deg, #43a047, #81c784);
+        }
+        [data-theme="dark"] {
+            --primary-color: #388e3c;
+            --danger-color: #ef5350;
+            --success-color: #66bb6a;
+            --warning-color: #ffd54f;
+            --info-color: #81c784;
+            --bg-color: #1b2e1b;
+            --card-bg: #263826;
+            --text-color: #e8f5e9;
+            --text-muted: #a5d6a7;
+            --border-color: #388e3c;
+            --header-gradient: linear-gradient(135deg, #388e3c, #66bb6a);
+        }
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Press Start 2P', cursive, monospace;
+            color: var(--text-color);
+        }
+        .app-header {
+            background: var(--header-gradient);
+            border: 4px double var(--border-color);
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0 0.5rem 0;
+            margin-bottom: 1rem;
+        }
+        .app-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .game-controls {
+            margin: 1rem 0 0.5rem 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn, .btn:focus {
+            border: 2px solid var(--border-color);
+            background: var(--primary-color);
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        }
+        .btn-outline-light, .btn-outline-light:focus {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        .btn-primary, .btn-success {
+            background: var(--success-color);
+            border-color: var(--primary-color);
+        }
+        .btn-danger {
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        .btn:active {
+            transform: translate(1px, 1px);
+        }
+        .theme-switcher {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            margin-bottom: 1rem;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+        }
+        .card-header {
+            background: var(--primary-color);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .level-badge {
+            background: var(--warning-color);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        .progress {
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
+            height: 20px !important;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, var(--success-color) 0%, var(--warning-color) 100%);
+            color: #222;
+            font-weight: bold;
+        }
+        .monster-card {
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+        }
+        .monster-header {
+            background: var(--primary-color);
+            color: #fff;
+            font-size: 1rem;
+        }
+        .monster-icon {
+            font-size: 2em;
+            color: var(--danger-color);
+            margin-right: 0.5em;
+        }
+        .achievement-popup {
+            background: var(--header-gradient);
+            border: 2px solid var(--border-color);
+            color: #fff;
+            padding: 15px;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            min-width: 220px;
+            text-align: center;
+            display: none;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            margin: 2rem 0;
+        }
+        .nav-tabs .nav-link {
+            color: var(--primary-color);
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            font-size: 0.8rem;
+        }
+        .nav-tabs .nav-link.active {
+            background: var(--primary-color);
+            color: #fff;
+        }
+        .form-control, .form-select {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+        }
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+        .input-group-text {
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Achievement Popup -->
+    <div id="achievementPopup" class="achievement-popup">
+        <div><i class="bi bi-trophy-fill"></i> Achievement Unlocked!</div>
+        <div id="achievementText">First Payment Made!</div>
+    </div>
+
+    <div class="app-container">
+        <!-- App Header -->
+        <div class="app-header">
+            <h1><i class="bi bi-shield-fill"></i> Debt Quest</h1>
+            <p class="mb-3">Defeat your debt monsters and become the ultimate Debt Slayer!</p>
+            <div class="game-controls">
+                <button id="newGameBtn" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-plus-circle"></i> New Game
+                </button>
+                <button id="saveGameBtn" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-download"></i> Save Game
+                </button>
+                <label class="btn btn-outline-light btn-sm mb-0">
+                    <i class="bi bi-upload"></i> Load Game
+                    <input type="file" id="loadGameInput" accept=".json" style="display:none;">
+                </label>
+                <button class="theme-switcher" id="themeSwitcher" title="Toggle theme">
+                    <i class="bi bi-moon-fill"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Player Stats -->
+        <div class="card player-stats">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="level-badge me-3" id="playerLevel">1</div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0">Debt Slayer</h5>
+                            <small><span id="currentXP">0</span>/<span id="requiredXP">100</span> XP</small>
+                        </div>
+                        <div class="progress" style="height: 15px;">
+                            <div id="xpProgress" class="progress-bar xp-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <small>Defeat debt monsters to gain XP and level up!</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Debt Summary -->
+        <div class="card debt-summary">
+            <div class="card-body p-4">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h3 class="mb-1">$<span id="totalDebt">0.00</span></h3>
+                        <small>Total Quest</small>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="mb-1">$<span id="totalPaid">0.00</span></h3>
+                        <small>Damage Dealt</small>
+                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 20px;">
+                    <div id="overallProgress" class="progress-bar bg-light" style="width: 0%">
+                        <span class="text-dark fw-bold">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs justify-content-center">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#addMonster">
+                    <i class="bi bi-plus-circle"></i> Add Monster
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#attack">
+                    <i class="bi bi-sword"></i> Attack!
+                </button>
+            </li>
+        </ul>
+        
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Add Monster Tab -->
+            <div class="tab-pane fade show active" id="addMonster">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-dragon"></i> Summon New Debt Monster</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="addDebtForm">
+                            <div class="mb-3">
+                                <label class="form-label">Monster Name</label>
+                                <input type="text" class="form-control" id="debtName" 
+                                       placeholder="Credit Card Dragon, Student Loan Beast..." required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Monster HP (Debt Amount)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="debtAmount" 
+                                           min="0.01" step="0.01" placeholder="0.00" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Defeat By (Due Date)</label>
+                                <input type="date" class="form-control" id="dueDate">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-plus-circle"></i> Add to Quest Log
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Attack Tab -->
+            <div class="tab-pane fade" id="attack">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Launch Attack</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="attackForm">
+                            <div class="mb-3">
+                                <label class="form-label">Target Monster</label>
+                                <select class="form-select" id="targetMonster" required>
+                                    <option value="">Choose your target...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Attack Power (Payment Amount)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="attackPower" 
+                                           min="0.01" step="0.01" placeholder="0.00" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Battle Date</label>
+                                <input type="date" class="form-control" id="battleDate" required>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-sword"></i> ATTACK!
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Monster List -->
+        <div class="mt-4">
+            <h3 class="text-center mb-4">
+                <i class="bi bi-journal-bookmark"></i> Quest Log
+            </h3>
+            <div id="monsterList">
+                <div class="empty-state">
+                    <i class="bi bi-journal-x"></i>
+                    <h5>No Active Quests</h5>
+                    <p>Add your first debt monster to begin your epic journey!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class DebtQuest {
+            constructor() {
+                // Load saved data from localStorage or use defaults
+                const savedData = JSON.parse(localStorage.getItem('debtQuestData')) || {};
+                this.debts = savedData.debts || [];
+                this.payments = savedData.payments || [];
+                this.player = savedData.player || {
+                    level: 1,
+                    xp: 0,
+                    achievements: []
+                };
+                this.monsterIcons = [
+                    'bi-bug-fill', 'bi-fire', 'bi-lightning-fill', 'bi-tornado',
+                    'bi-cloud-lightning-fill', 'bi-emoji-angry-fill', 'bi-emoji-dizzy-fill',
+                    'bi-gem', 'bi-virus', 'bi-droplet-fill', 'bi-snow'
+                ];
+                this.init();
+            }
+            init() {
+                this.bindEvents();
+                this.setDefaultDate();
+                this.updateAllDisplays();
+            }
+            bindEvents() {
+                document.getElementById('addDebtForm').addEventListener('submit', (e) => this.addDebt(e));
+                document.getElementById('attackForm').addEventListener('submit', (e) => this.makePayment(e));
+                document.getElementById('newGameBtn').addEventListener('click', () => this.newGame());
+                document.getElementById('saveGameBtn').addEventListener('click', () => this.saveGame());
+                document.getElementById('loadGameInput').addEventListener('change', (e) => this.loadGame(e));
+                document.getElementById('themeSwitcher').addEventListener('click', () => this.toggleTheme());
+            }
+            setDefaultDate() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('battleDate').value = today;
+            }
+            addDebt(e) {
+                e.preventDefault();
+                const name = document.getElementById('debtName').value.trim();
+                const amount = parseFloat(document.getElementById('debtAmount').value);
+                const dueDate = document.getElementById('dueDate').value || '';
+                if (!name || !amount || amount <= 0) {
+                    alert('Please enter a valid monster name and amount greater than 0.');
+                    return;
+                }
+                const debt = {
+                    id: Date.now(),
+                    name,
+                    originalAmount: amount,
+                    remainingAmount: amount,
+                    dueDate: dueDate, // can be empty string
+                    dateAdded: new Date().toISOString(),
+                    icon: this.monsterIcons[Math.floor(Math.random() * this.monsterIcons.length)]
+                };
+                this.debts.push(debt);
+                this.saveToLocalStorage();
+                this.checkAchievements('debt_added');
+                this.updateAllDisplays();
+                this.resetForm('addDebtForm');
+                this.showAchievement('New debt monster added to your quest!');
+            }
+            makePayment(e) {
+                e.preventDefault();
+                const debtId = parseInt(document.getElementById('targetMonster').value);
+                const amount = parseFloat(document.getElementById('attackPower').value);
+                const date = document.getElementById('battleDate').value;
+                if (!debtId || !amount || amount <= 0) return;
+                const debt = this.debts.find(d => d.id === debtId);
+                if (!debt || debt.remainingAmount <= 0) return;
+                const actualPayment = Math.min(amount, debt.remainingAmount);
+                const wasDefeated = debt.remainingAmount > 0 && (debt.remainingAmount - actualPayment) <= 0;
+                debt.remainingAmount = Math.max(0, debt.remainingAmount - actualPayment);
+                const payment = {
+                    id: Date.now(),
+                    debtId,
+                    amount: actualPayment,
+                    date: date || new Date().toISOString(),
+                    xpGained: Math.ceil(actualPayment)
+                };
+                this.payments.push(payment);
+                this.saveToLocalStorage();
+                this.player.xp += payment.xpGained;
+                if (wasDefeated) {
+                    this.player.xp += Math.ceil(actualPayment);
+                    this.showAchievement(`💀 ${debt.name} DEFEATED! +${payment.xpGained * 2} XP`);
+                } else {
+                    this.showAchievement(`⚔️ ${actualPayment.toFixed(2)} damage dealt! +${payment.xpGained} XP`);
+                }
+                this.checkLevelUp();
+                this.checkAchievements('payment_made', { payment, debt, wasDefeated });
+                this.updateAllDisplays();
+                this.resetForm('attackForm');
+                this.setDefaultDate();
+            }
+            checkLevelUp() {
+                const requiredXP = this.getRequiredXP(this.player.level);
+                if (this.player.xp >= requiredXP) {
+                    this.player.level++;
+                    this.player.xp -= requiredXP;
+                    this.showAchievement(`🌟 LEVEL UP! You are now level ${this.player.level}!`);
+                    if (this.player.xp >= this.getRequiredXP(this.player.level)) {
+                        this.checkLevelUp();
+                    }
+                }
+            }
+            getRequiredXP(level) {
+                return level * 100;
+            }
+            checkAchievements(type, data = {}) {
+                const achievements = [];
+                if (type === 'debt_added' && this.debts.length === 1 && !this.hasAchievement('first_debt')) {
+                    achievements.push({ id: 'first_debt', text: '🎯 First Quest Started!', xp: 10 });
+                }
+                if (type === 'payment_made') {
+                    if (this.payments.length === 1 && !this.hasAchievement('first_payment')) {
+                        achievements.push({ id: 'first_payment', text: '⚔️ First Attack Launched!', xp: 20 });
+                    }
+                    if (data.wasDefeated && !this.hasAchievement('first_defeat')) {
+                        achievements.push({ id: 'first_defeat', text: '💀 First Monster Defeated!', xp: 50 });
+                    }
+                    if (this.payments.length === 10 && !this.hasAchievement('ten_payments')) {
+                        achievements.push({ id: 'ten_payments', text: '🔥 10 Attacks Launched!', xp: 40 });
+                    }
+                    if (data.payment.amount >= 500 && !this.hasAchievement('big_attack')) {
+                        achievements.push({ id: 'big_attack', text: '💥 Critical Strike! $500+ attack!', xp: 60 });
+                    }
+                }
+                const progress = this.getOverallProgress();
+                if (progress >= 50 && !this.hasAchievement('halfway')) {
+                    achievements.push({ id: 'halfway', text: '🏆 Halfway There! 50% Complete!', xp: 100 });
+                }
+                if (progress >= 100 && !this.hasAchievement('debt_free')) {
+                    achievements.push({ id: 'debt_free', text: '👑 DEBT FREE! All monsters defeated!', xp: 500 });
+                }
+                achievements.forEach(achievement => {
+                    this.player.achievements.push(achievement.id);
+                    this.player.xp += achievement.xp;
+                    setTimeout(() => this.showAchievement(achievement.text), 500);
+                });
+            }
+            hasAchievement(id) {
+                return this.player.achievements.includes(id);
+            }
+            getOverallProgress() {
+                const totalOriginal = this.debts.reduce((sum, debt) => sum + debt.originalAmount, 0);
+                const totalRemaining = this.debts.reduce((sum, debt) => sum + debt.remainingAmount, 0);
+                return totalOriginal > 0 ? ((totalOriginal - totalRemaining) / totalOriginal) * 100 : 0;
+            }
+            showAchievement(text) {
+                const popup = document.getElementById('achievementPopup');
+                const textElement = document.getElementById('achievementText');
+                textElement.textContent = text;
+                popup.style.display = 'block';
+                setTimeout(() => popup.style.display = 'none', 4000);
+            }
+            updateAllDisplays() {
+                this.updatePlayerStats();
+                this.updateDebtSummary();
+                this.updateMonsterSelect();
+                this.updateMonsterList();
+            }
+            updatePlayerStats() {
+                const requiredXP = this.getRequiredXP(this.player.level);
+                document.getElementById('playerLevel').textContent = this.player.level;
+                document.getElementById('currentXP').textContent = this.player.xp;
+                document.getElementById('requiredXP').textContent = requiredXP;
+                document.getElementById('xpProgress').style.width = `${(this.player.xp / requiredXP) * 100}%`;
+            }
+            updateDebtSummary() {
+                const totalOriginal = this.debts.reduce((sum, debt) => sum + debt.originalAmount, 0);
+                const totalRemaining = this.debts.reduce((sum, debt) => sum + debt.remainingAmount, 0);
+                const totalPaid = totalOriginal - totalRemaining;
+                const progress = this.getOverallProgress();
+                document.getElementById('totalDebt').textContent = totalOriginal.toFixed(2);
+                document.getElementById('totalPaid').textContent = totalPaid.toFixed(2);
+                document.getElementById('overallProgress').style.width = `${progress}%`;
+                document.getElementById('overallProgress').querySelector('span').textContent = `${progress.toFixed(0)}%`;
+            }
+            updateMonsterSelect() {
+                const select = document.getElementById('targetMonster');
+                select.innerHTML = '<option value="">Choose your target...</option>';
+                this.debts
+                    .filter(debt => debt.remainingAmount > 0)
+                    .forEach(debt => {
+                        const option = document.createElement('option');
+                        option.value = debt.id;
+                        option.textContent = `${debt.name} (HP: $${debt.remainingAmount.toFixed(2)})`;
+                        select.appendChild(option);
+                    });
+            }
+            updateMonsterList() {
+                const container = document.getElementById('monsterList');
+                if (this.debts.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="bi bi-journal-x"></i>
+                            <h5>No Active Quests</h5>
+                            <p>Add your first debt monster to begin your epic journey!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                container.innerHTML = '';
+                this.debts.forEach(debt => {
+                    const isDefeated = debt.remainingAmount <= 0;
+                    const progress = ((debt.originalAmount - debt.remainingAmount) / debt.originalAmount) * 100;
+                    const card = document.createElement('div');
+                    card.className = 'card mb-3 monster-card' + (isDefeated ? ' defeated' : '');
+                    card.innerHTML = `
+                        <div class="card-header monster-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi ${debt.icon} monster-icon"></i>
+                                    <h5 class="mb-0 ms-2">${debt.name}</h5>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-warning text-dark">${debt.remainingAmount.toFixed(2)} HP</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-1">Quest Details:</p>
+                            <div class="d-flex justify-content-between">
+                                <small>🗓️ Due: ${this.formatDate(debt.dueDate)}</small>
+                                <small>💰 Total: $${debt.originalAmount.toFixed(2)}</small>
+                            </div>
+                            <div class="progress mt-2" style="height: 10px;">
+                                <div class="progress-bar" role="progressbar" style="width: ${progress}%; background: linear-gradient(90deg, #43a047, #fbc02d);" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-danger" onclick="app.removeDebt(${debt.id})">
+                                    <i class="bi bi-x-circle"></i> Abandon Quest
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+            formatDate(dateString) {
+                if (!dateString) return 'No deadline';
+                try {
+                    return new Date(dateString).toLocaleDateString();
+                } catch {
+                    return 'Invalid date';
+                }
+            }
+            resetForm(formId) {
+                document.getElementById(formId).reset();
+            }
+            newGame() {
+                if (confirm("Are you sure you want to start a new game? This will erase all progress.")) {
+                    this.debts = [];
+                    this.payments = [];
+                    this.player = {
+                        level: 1,
+                        xp: 0,
+                        achievements: []
+                    };
+                    this.saveToLocalStorage();
+                    this.updateAllDisplays();
+                    localStorage.removeItem('debtQuestData');
+                    this.showAchievement('New Game Started!');
+                }
+            }
+            saveToLocalStorage() {
+                const gameData = {
+                    debts: this.debts,
+                    payments: this.payments,
+                    player: this.player
+                };
+                localStorage.setItem('debtQuestData', JSON.stringify(gameData));
+            }
+            removeDebt(id) {
+                this.debts = this.debts.filter(d => d.id !== id);
+                this.payments = this.payments.filter(p => p.debtId !== id);
+                this.saveToLocalStorage();
+                this.updateAllDisplays();
+                this.showAchievement('Quest abandoned!');
+            }
+            saveGame() {
+                const saveData = {
+                    debts: this.debts,
+                    payments: this.payments,
+                    player: this.player,
+                    saveDate: new Date().toISOString(),
+                    version: '1.0'
+                };
+                const blob = new Blob([JSON.stringify(saveData, null, 2)], {
+                    type: 'application/json'
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `debt_quest_save_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                this.showAchievement('Game saved! Check your downloads folder.');
+            }
+            loadGame(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const saveData = JSON.parse(event.target.result);
+                        this.debts = saveData.debts || [];
+                        this.payments = saveData.payments || [];
+                        this.player = saveData.player || {
+                            level: 1,
+                            xp: 0,
+                            achievements: []
+                        };
+                        this.saveToLocalStorage();
+                        this.updateAllDisplays();
+                        this.showAchievement('Game loaded successfully!');
+                    } catch (error) {
+                        alert('Error loading game: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+            toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                const icon = newTheme === 'dark' ? 'bi-sun-fill' : 'bi-moon-fill';
+                document.getElementById('themeSwitcher').innerHTML = `<i class="bi ${icon}"></i>`;
+            }
+        }
+        // Expose app for removeDebt button
+        window.app = new DebtQuest();
+
+        // Theme switcher functionality
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('themeSwitcher').innerHTML = `<i class="bi ${theme === 'dark' ? 'bi-sun-fill' : 'bi-moon-fill'}"></i>`;
+        })();
+    </script>
+</body>
+</html>
