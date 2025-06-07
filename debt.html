@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest for Freedom</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Use a modern, highly readable sans-serif font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Add to your existing styles */
+        :root {
+            /* Parchment/Medieval Theme Colors */
+            --primary-color: #8b4513;      /* Saddle brown */
+            --bg-color: #d2b48c;          /* Tan */
+            --card-bg: #deb887;           /* Burlywood */
+            --text-color: #3e2723;        /* Dark brown */
+            --border-color: #8b4513;      /* Saddle brown */
+            --menu-bg: #f5deb3;           /* Wheat */
+            --scroll-bg: url('data:image/png;base64,...'); /* Add parchment texture */
+        }
+
+        [data-theme="dark"] {
+            /* Retro JRPG Dark Theme */
+            --primary-color: #4b84a1;
+            --danger-color: #e85d45;
+            --success-color: #5cb894;
+            --warning-color: #ffd166;
+            --info-color: #70a9c7;
+            --bg-color: #0f1a20;
+            --card-bg: #1a2f38;
+            --text-color: #f7f9f9;
+            --text-muted: #89a4b3;
+            --border-color: #2d5a77;
+            --header-gradient: linear-gradient(135deg, #1a2f38, #0f1a20);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+            color: var(--text-color);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        .app-header {
+            background: var(--header-gradient);
+            border-bottom: 2px solid var(--border-color);
+            color: var(--primary-color);
+            text-align: center;
+            padding: 1.5rem 0 1rem 0;
+            margin-bottom: 1.5rem;
+        }
+        .app-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+        .game-controls {
+            margin: 1rem 0 0.5rem 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn, .btn:focus {
+            border: 2px solid var(--border-color);
+            background: var(--primary-color);
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 1px 1px 0 rgba(0,0,0,0.04);
+        }
+        .btn-outline-light, .btn-outline-light:focus {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        .btn-primary, .btn-success {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: #fff;
+        }
+        .btn-danger {
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+            color: #fff;
+        }
+        .btn:active {
+            transform: translate(1px, 1px);
+        }
+        .theme-switcher {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px var(--border-color);
+        }
+        .card {
+            background: var(--menu-bg);
+            border: 3px solid #654321;
+            border-radius: 8px;
+            box-shadow: 
+                inset 0 0 20px rgba(139, 69, 19, 0.2),
+                2px 2px 5px rgba(0, 0, 0, 0.2);
+            font-family: 'Press Start 2P', cursive;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('path-to-parchment-texture.png');
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        .card-header {
+            background: var(--primary-color);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .level-badge {
+            background: var(--warning-color);
+            color: var(--primary-color);
+            border: 2px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        .progress {
+            border: 2px solid var(--border-color);
+            background: rgba(0,0,0,0.3);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .progress-bar {
+            background: linear-gradient(
+                45deg,
+                var(--success-color) 0%,
+                var(--warning-color) 50%,
+                var(--danger-color) 100%
+            );
+            box-shadow: 
+                0 0 10px var(--success-color),
+                inset 0 0 15px rgba(255,255,255,0.3);
+        }
+        .monster-card {
+            display: flex;
+            flex-direction: column;
+            height: 200px; /* Fixed height for consistency */
+            margin-bottom: 1rem;
+            background: var(--menu-bg);
+            border: 2px solid #654321;
+        }
+        .monster-card .card-header {
+            padding: 0.75rem;
+            flex-shrink: 0; /* Prevent header from shrinking */
+        }
+        .monster-card .card-body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1; /* Take remaining space */
+        }
+        .monster-emoji {
+            width: 40px; /* Fixed width */
+            height: 40px; /* Fixed height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-right: 0.5rem;
+        }
+        .hp-bar-container {
+            height: 15px; /* Consistent height */
+            margin: 0.5rem 0;
+        }
+        .quest-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .progress {
+            height: 8px !important; /* Force consistent height */
+        }
+        .abandon-quest {
+            padding: 0.25rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            color: var(--text-color);
+        }
+
+        .abandon-quest:hover {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-close {
+            background-color: transparent;
+            border: none;
+        }
+
+        .abandon-quest.btn-close {
+            opacity: 0.8;
+            filter: none !important; /* Remove the invert filter */
+            background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23333'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+}
+
+.abandon-quest.btn-close:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Grid layout for monster list */
+#monsterList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+/* Add these styles to your CSS section */
+.player-dashboard {
+    background: var(--card-bg);
+    border: 3px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+}
+
+.character-section {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.character-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.player-character {
+    font-size: 4rem;
+    filter: drop-shadow(0 0 10px var(--primary-color));
+    animation: float 3s ease-in-out infinite;
+}
+
+.level-badge-large {
+    background: var(--warning-color);
+    color: var(--text-color);
+    border: 3px solid var(--border-color);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 50%;
+    margin: 1rem auto;
+    box-shadow: 0 0 15px rgba(255,215,0,0.3);
+}
+
+.stats-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.main-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.stat-card {
+    background: rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.hp-bar-container, .xp-bar-container {
+    height: 25px;
+    position: relative;
+    margin-top: 0.5rem;
+}
+
+.combat-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.stat-box {
+    background: rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .combat-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Replace or update the existing HP bar styles */
+.hp-bar-container {
+    width: 100%;
+    height: 20px;
+    background: #2a2a2a;
+    border: 2px solid #454545;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 10px 0;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.hp-bar {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(
+        to bottom,
+        #34c924 0%,
+        #2ba818 50%,
+        #1d7b0e 51%,
+        #167008 100%
+    );
+    transition: width 0.3s ease-out;
+}
+
+.hp-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+    font-weight: bold;
+    font-size: 0.8rem;
+    z-index: 1;
+    font-family: 'Press Start 2P', system-ui, -apple-system, sans-serif;
+}
+
+/* Remove these animation styles */
+.hp-bar::after {
+    content: none;
+}
+
+@keyframes moveStripes {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 0; }
+}
+
+.hp-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    font-weight: bold;
+    font-size: 0.8rem;
+    z-index: 1;
+}
+
+/* Add scanlines effect */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        transparent 50%,
+        rgba(0, 0, 0, 0.05) 50%
+    );
+    background-size: 4px 4px;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.bg-purple {
+    background: linear-gradient(135deg, #6f42c1, #6610f2);
+}
+
+.boss-card {
+    box-shadow: 0 0 15px rgba(111, 66, 193, 0.5);
+    border: 3px solid #6f42c1;
+}
+
+.boss-card .monster-emoji {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.boss-card .hp-bar {
+    background: linear-gradient(90deg, #6f42c1, #6610f2);
+    box-shadow: 0 0 10px rgba(111, 66, 193, 0.5);
+}
+    </style>
+</head>
+<body>
+    <!-- Achievement Popup -->
+    <div id="achievementPopup" class="achievement-popup">
+        <div><i class="bi bi-trophy-fill"></i> Achievement Unlocked!</div>
+        <div id="achievementText">First Payment Made!</div>
+    </div>
+
+    <div class="app-container">
+        <!-- App Header -->
+        <div class="app-header">
+            <h1><i class="bi bi-shield-fill"></i> Quest for Freedom</h1>
+            <p class="mb-3">Forge your path to financial freedom, one victory at a time!</p>
+            <div class="game-controls">
+                <button id="newGameBtn" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-plus-circle"></i> New Game
+                </button>
+                <button id="saveGameBtn" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-download"></i> Save Game
+                </button>
+                <label class="btn btn-outline-light btn-sm mb-0">
+                    <i class="bi bi-upload"></i> Load Game
+                    <input type="file" id="loadGameInput" accept=".json" style="display:none;">
+                </label>
+                <button class="theme-switcher" id="themeSwitcher" title="Toggle theme">
+                    <i class="bi bi-moon-fill"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Player Stats -->
+        <div class="player-dashboard mb-4">
+    <div class="stats-container">
+        <div class="character-section">
+            <div class="character-display">
+                <div class="player-character"></div>
+                <div class="player-title"></div>
+                <div class="level-badge-large" id="playerLevel">1</div>
+            </div>
+        </div>
+        
+        <div class="stats-section">
+            <div class="main-stats">
+                <div class="stat-card hp-stat">
+                    <div class="stat-label">HP</div>
+                    <div class="hp-bar-container">
+                        <div class="hp-text"></div>
+                        <div class="hp-bar"></div>
+                    </div>
+                </div>
+                
+                <div class="stat-card xp-stat">
+                    <div class="stat-label">Experience</div>
+                    <div class="xp-bar-container">
+                        <div class="progress">
+                            <div id="xpProgress" class="progress-bar"></div>
+                        </div>
+                        <div class="xp-text">
+                            <span id="currentXP">0</span>/<span id="requiredXP">100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="combat-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="monstersDefeated">0</div>
+                    <div class="stat-label">Monsters Defeated</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalDamage">$0</div>
+                    <div class="stat-label">Total Damage Dealt</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="criticalHits">0</div>
+                    <div class="stat-label">Critical Hits</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        
+        <!-- Debt Summary -->
+        <div class="card debt-summary">
+            <div class="card-body p-4">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h3 class="mb-1">$<span id="totalDebt">0.00</span></h3>
+                        <small>Total Quest</small>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="mb-1">$<span id="totalPaid">0.00</span></h3>
+                        <small>Damage Dealt</small>
+                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 20px;">
+                    <div id="overallProgress" class="progress-bar bg-light" style="width: 0%">
+                        <span class="text-dark fw-bold">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs justify-content-center">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#addMonster">
+                    <i class="bi bi-plus-circle"></i> Add Monster
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#attack">
+                    <i class="bi bi-sword"></i> Attack!
+                </button>
+            </li>
+        </ul>
+        
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Add Monster Tab -->
+            <div class="tab-pane fade show active" id="addMonster">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-dragon"></i> Summon New Debt Monster</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="addDebtForm">
+                            <div class="mb-3">
+                                <label class="form-label">Monster Name</label>
+                                <input type="text" class="form-control" id="debtName" 
+                                       placeholder="Credit Card Dragon, Student Loan Beast..." required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Monster HP (Debt Amount)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="debtAmount" 
+                                           min="0.01" step="0.01" placeholder="0.00" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Defeat By (Due Date)</label>
+                                <input type="date" class="form-control" id="dueDate">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-plus-circle"></i> Add to Quest Log
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Attack Tab -->
+            <div class="tab-pane fade" id="attack">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Launch Attack</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="attackForm">
+                            <div class="mb-3">
+                                <label class="form-label">Target Monster</label>
+                                <select class="form-select" id="targetMonster" required>
+                                    <option value="">Choose your target...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Attack Power (Payment Amount)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="attackPower" 
+                                           min="0.01" step="0.01" placeholder="0.00" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Battle Date</label>
+                                <input type="date" class="form-control" id="battleDate" required>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-sword"></i> ATTACK!
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Monster List -->
+        <div class="mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="mb-0">
+                    <i class="bi bi-journal-bookmark"></i> Quest Log
+                </h3>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-primary" onclick="app.sortMonsters('desc')">
+                        <i class="bi bi-sort-numeric-down"></i> Highest HP
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="app.sortMonsters('asc')">
+                        <i class="bi bi-sort-numeric-up"></i> Lowest HP
+                    </button>
+                </div>
+            </div>
+            <div id="monsterList">
+                <div class="empty-state">
+                    <i class="bi bi-journal-x"></i>
+                    <h5>No Active Quests</h5>
+                    <p>Add your first debt monster to begin your epic journey!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class DebtQuest {
+            constructor() {
+                // Load saved data from localStorage or use defaults
+                const savedData = JSON.parse(localStorage.getItem('questForFreedomData')) || {};
+                this.debts = savedData.debts || [];
+                this.payments = savedData.payments || [];
+                this.player = savedData.player || {
+                    level: 1,
+                    xp: 0,
+                    hp: 100,
+                    maxHp: 100,
+                    mp: 50,
+                    maxMp: 50,
+                    achievements: []
+                };
+                this.monsterIcons = [
+                    'bi-bug-fill', 'bi-fire', 'bi-lightning-fill', 'bi-tornado',
+                    'bi-cloud-lightning-fill', 'bi-emoji-angry-fill', 'bi-emoji-dizzy-fill',
+                    'bi-gem', 'bi-virus', 'bi-droplet-fill', 'bi-snow'
+                ];
+                this.monsterTiers = {
+                    small: ['🐛', '🐜', '🐞', '🦗', '🕷️'],      // 0-250 Small debts
+                    medium: ['🦎', '🐍', '🦂', '🐊', '🐢'],      // 250-500 Medium debts
+                    large: ['🐉', '🐲', '🦖', '👹', '👻'],       // 500-1000 Large debts
+                    boss: ['👿', '💀', '🔥', '⚡', '🌋']         // 1000+ Boss monsters
+                };
+                this.equipmentTiers = {
+                    1: { icon: '🤺', desc: 'Novice Debt Slayer' },
+                    5: { icon: '⚔️', desc: 'Armed with Sword' },
+                    10: { icon: '🛡️', desc: 'Shield Bearer' },
+                    15: { icon: '🏹', desc: 'Ranged Warrior' },
+                    20: { icon: '🗡️', desc: 'Dual Wielder' },
+                    25: { icon: '🪄', desc: 'Magic User' },
+                    30: { icon: '🔮', desc: 'Mystic Warrior' },
+                    40: { icon: '⚡', desc: 'Lightning Master' },
+                    50: { icon: '🌟', desc: 'Legendary Hero' }
+                };
+                
+                // Initialize theme
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                
+                this.init();
+            }
+            init() {
+                this.bindEvents();
+                this.setDefaultDate();
+                this.updateAllDisplays();
+            }
+            bindEvents() {
+                document.getElementById('addDebtForm').addEventListener('submit', (e) => this.addDebt(e));
+                document.getElementById('attackForm').addEventListener('submit', (e) => this.makePayment(e));
+                document.getElementById('newGameBtn').addEventListener('click', () => this.newGame());
+                document.getElementById('saveGameBtn').addEventListener('click', () => this.saveGame());
+                document.getElementById('loadGameInput').addEventListener('change', (e) => this.loadGame(e));
+                document.getElementById('themeSwitcher').addEventListener('click', () => this.toggleTheme());
+            }
+            setDefaultDate() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('battleDate').value = today;
+            }
+            addDebt(e) {
+                e.preventDefault();
+                const name = document.getElementById('debtName').value.trim();
+                const amount = parseFloat(document.getElementById('debtAmount').value);
+                const dueDate = document.getElementById('dueDate').value || '';
+                
+                if (!name || !amount || amount <= 0) {
+                    alert('Please enter a valid monster name and amount greater than 0.');
+                    return;
+                }
+                
+                const tier = this.getMonsterTier(amount);
+                const debt = {
+                    id: Date.now(),
+                    name,
+                    originalAmount: amount,
+                    remainingAmount: amount,
+                    dueDate: dueDate,
+                    dateAdded: new Date().toISOString(),
+                    emoji: this.monsterTiers[tier][Math.floor(Math.random() * this.monsterTiers[tier].length)]
+                };
+                
+                this.debts.push(debt);
+                this.saveToLocalStorage();
+                this.checkAchievements('debt_added');
+                this.updateAllDisplays();
+                this.resetForm('addDebtForm');
+                this.showAchievement('New debt monster added to your quest!');
+            }
+            makePayment(e) {
+                e.preventDefault();
+                const debtId = parseInt(document.getElementById('targetMonster').value);
+                const amount = parseFloat(document.getElementById('attackPower').value);
+                const date = document.getElementById('battleDate').value;
+                if (!debtId || !amount || amount <= 0) return;
+                const debt = this.debts.find(d => d.id === debtId);
+                if (!debt || debt.remainingAmount <= 0) return;
+                const actualPayment = Math.min(amount, debt.remainingAmount);
+                const wasDefeated = debt.remainingAmount > 0 && (debt.remainingAmount - actualPayment) <= 0;
+                debt.remainingAmount = Math.max(0, debt.remainingAmount - actualPayment);
+                const payment = {
+                    id: Date.now(),
+                    debtId,
+                    amount: actualPayment,
+                    date: date || new Date().toISOString(),
+                    xpGained: Math.ceil(actualPayment)
+                };
+                this.payments.push(payment);
+                this.saveToLocalStorage();
+                this.player.xp += payment.xpGained;
+                if (wasDefeated) {
+                    this.player.xp += Math.ceil(actualPayment);
+                    this.showAchievement(`💀 ${debt.name} DEFEATED! +${payment.xpGained * 2} XP`);
+                } else {
+                    this.showAchievement(`⚔️ ${actualPayment.toFixed(2)} damage dealt! +${payment.xpGained} XP`);
+                }
+                this.checkLevelUp();
+                this.checkAchievements('payment_made', { payment, debt, wasDefeated });
+                this.updateAllDisplays();
+                this.resetForm('attackForm');
+                this.setDefaultDate();
+            }
+            checkLevelUp() {
+                const requiredXP = this.getRequiredXP(this.player.level);
+                if (this.player.xp >= requiredXP) {
+                    this.player.level++;
+                    this.player.xp -= requiredXP;
+                    this.showAchievement(`🌟 LEVEL UP! You are now level ${this.player.level}!`);
+                    if (this.player.xp >= this.getRequiredXP(this.player.level)) {
+                        this.checkLevelUp();
+                    }
+                }
+            }
+            getRequiredXP(level) {
+                return level * 100;
+            }
+            checkAchievements(type, data = {}) {
+                const achievements = [];
+                if (type === 'debt_added' && this.debts.length === 1 && !this.hasAchievement('first_debt')) {
+                    achievements.push({ id: 'first_debt', text: '🎯 First Quest Started!', xp: 10 });
+                }
+                if (type === 'payment_made') {
+                    if (this.payments.length === 1 && !this.hasAchievement('first_payment')) {
+                        achievements.push({ id: 'first_payment', text: '⚔️ First Attack Launched!', xp: 20 });
+                    }
+                    if (data.wasDefeated && !this.hasAchievement('first_defeat')) {
+                        achievements.push({ id: 'first_defeat', text: '💀 First Monster Defeated!', xp: 50 });
+                    }
+                    if (this.payments.length === 10 && !this.hasAchievement('ten_payments')) {
+                        achievements.push({ id: 'ten_payments', text: '🔥 10 Attacks Launched!', xp: 40 });
+                    }
+                    if (data.payment.amount >= 500 && !this.hasAchievement('big_attack')) {
+                        achievements.push({ id: 'big_attack', text: '💥 Critical Strike! $500+ attack!', xp: 60 });
+                    }
+                }
+                const progress = this.getOverallProgress();
+                if (progress >= 50 && !this.hasAchievement('halfway')) {
+                    achievements.push({ id: 'halfway', text: '🏆 Halfway There! 50% Complete!', xp: 100 });
+                }
+                if (progress >= 100 && !this.hasAchievement('debt_free')) {
+                    achievements.push({ id: 'debt_free', text: '👑 DEBT FREE! All monsters defeated!', xp: 500 });
+                }
+                achievements.forEach(achievement => {
+                    this.player.achievements.push(achievement.id);
+                    this.player.xp += achievement.xp;
+                    setTimeout(() => this.showAchievement(achievement.text), 500);
+                });
+            }
+            hasAchievement(id) {
+                return this.player.achievements.includes(id);
+            }
+            getOverallProgress() {
+                const totalOriginal = this.debts.reduce((sum, debt) => sum + debt.originalAmount, 0);
+                const totalRemaining = this.debts.reduce((sum, debt) => sum + debt.remainingAmount, 0);
+                return totalOriginal > 0 ? ((totalOriginal - totalRemaining) / totalOriginal) * 100 : 0;
+            }
+            showAchievement(text) {
+                const popup = document.getElementById('achievementPopup');
+                const textElement = document.getElementById('achievementText');
+                textElement.textContent = text;
+                popup.style.display = 'block';
+                
+                // Clear any existing timeout
+                if (this.achievementTimeout) {
+                    clearTimeout(this.achievementTimeout);
+                }
+                
+                // Set new timeout
+                this.achievementTimeout = setTimeout(() => {
+                    popup.style.display = 'none';
+                }, 4000);
+            }
+            updateAllDisplays() {
+                this.updatePlayerStats();
+                this.updateDebtSummary();
+                this.updateMonsterSelect();
+                this.updateMonsterList();
+            }
+            updatePlayerStats() {
+                const requiredXP = this.getRequiredXP(this.player.level);
+                const character = this.getCharacterDisplay();
+                
+                document.getElementById('playerLevel').textContent = this.player.level;
+                document.querySelector('.player-character').innerHTML = character.icon;
+                document.querySelector('.player-title').textContent = character.desc;
+                
+                // Update XP
+                document.getElementById('currentXP').textContent = this.player.xp;
+                document.getElementById('requiredXP').textContent = requiredXP;
+                document.getElementById('xpProgress').style.width = `${(this.player.xp / requiredXP) * 100}%`;
+                
+                // Fix combat stats calculation
+                const defeatedMonsters = this.debts.filter(d => d.remainingAmount <= 0).length;
+                const totalDamage = this.payments.reduce((sum, p) => sum + p.amount, 0);
+                const criticalHits = this.payments.filter(p => p.amount >= 500).length;
+                
+                document.getElementById('monstersDefeated').textContent = defeatedMonsters;
+                document.getElementById('totalDamage').textContent = `$${totalDamage.toFixed(2)}`;
+                document.getElementById('criticalHits').textContent = criticalHits;
+            }
+            updateHpBars() {
+                const hpBar = document.querySelector('.hp-bar');
+                const hpText = document.querySelector('.hp-text');
+                const hpPercent = (this.player.hp / this.player.maxHp) * 100;
+                
+                hpBar.style.width = `${hpPercent}%`;
+                hpText.textContent = `${this.player.hp}/${this.player.maxHp}`;
+                
+                // Update HP bar color based on percentage
+                if (hpPercent > 75) {
+                    hpBar.style.background = '#28a745';
+                } else if (hpPercent > 50) {
+                    hpBar.style.background = '#ffc107';
+                } else if (hpPercent > 25) {
+                    hpBar.style.background = '#17a2b8';
+                } else {
+                    hpBar.style.background = '#dc3545';
+                }
+            }
+            updateDebtSummary() {
+                const totalOriginal = this.debts.reduce((sum, debt) => sum + debt.originalAmount, 0);
+                const totalRemaining = this.debts.reduce((sum, debt) => sum + debt.remainingAmount, 0);
+                const totalPaid = totalOriginal - totalRemaining;
+                const progress = this.getOverallProgress();
+                document.getElementById('totalDebt').textContent = totalOriginal.toFixed(2);
+                document.getElementById('totalPaid').textContent = totalPaid.toFixed(2);
+                document.getElementById('overallProgress').style.width = `${progress}%`;
+                document.getElementById('overallProgress').querySelector('span').textContent = `${progress.toFixed(0)}%`;
+            }
+            updateMonsterSelect() {
+                const select = document.getElementById('targetMonster');
+                select.innerHTML = '<option value="">Choose your target...</option>';
+                this.debts
+                    .filter(debt => debt.remainingAmount > 0)
+                    .forEach(debt => {
+                        const option = document.createElement('option');
+                        option.value = debt.id;
+                        option.textContent = `${debt.name} (HP: $${debt.remainingAmount.toFixed(2)})`;
+                        select.appendChild(option);
+                    });
+            }
+            sortMonsters(direction = 'desc') {
+                this.debts.sort((a, b) => {
+                    if (direction === 'desc') {
+                        return b.remainingAmount - a.remainingAmount;
+                    } else {
+                        return a.remainingAmount - b.remainingAmount;
+                    }
+                });
+                this.updateMonsterList();
+                this.saveToLocalStorage();
+            }
+            updateMonsterList() {
+                const container = document.getElementById('monsterList');
+                if (!container) return;
+                
+                if (this.debts.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="bi bi-journal-x"></i>
+                            <h5>No Active Quests</h5>
+                            <p>Add your first debt monster to begin your epic journey!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = '';
+                this.debts.forEach(debt => {
+                    const card = document.createElement('div');
+                    card.className = `card monster-card mb-3`;
+                    
+                    const isDefeated = debt.remainingAmount <= 0;
+                    const progress = ((debt.originalAmount - debt.remainingAmount) / debt.originalAmount) * 100;
+                    const hpPercentage = (debt.remainingAmount / debt.originalAmount) * 100;
+                    
+                    // Determine monster class
+                    let monsterClass = '';
+                    if (isDefeated) {
+                        monsterClass = 'bg-secondary';
+                    } else if (debt.originalAmount > 1000) {
+                        monsterClass = 'bg-purple text-white boss-card';
+                    } else if (debt.originalAmount > 500) {
+                        monsterClass = 'bg-danger text-white';
+                    } else if (debt.originalAmount > 250) {
+                        monsterClass = 'bg-warning';
+                    } else {
+                        monsterClass = 'bg-success text-white';
+                    }
+
+                    card.innerHTML = `
+                        <div class="card-header monster-header ${monsterClass}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="monster-emoji">${debt.emoji}</span>
+                                    <h5 class="mb-0 ms-2">${debt.name}</h5>
+                                </div>
+                                <button class="btn btn-sm btn-close abandon-quest" 
+                                        onclick="app.removeDebt(${debt.id})"
+                                        aria-label="Abandon Quest">
+                                </button>
+                            </div>
+                            <div class="hp-bar-container mt-2">
+                                <div class="hp-text">
+                                    $${debt.remainingAmount.toFixed(2)} / $${debt.originalAmount.toFixed(2)}
+                                </div>
+                                <div class="hp-bar" style="
+                                    width: ${hpPercentage}%;
+                                    background: ${this.getHpBarColor(hpPercentage)};
+                                "></div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="quest-details">
+                                <small>🗓️ Due: ${this.formatDate(debt.dueDate)}</small>
+                                <small>⚔️ Progress: ${progress.toFixed(1)}%</small>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+            }
+            getProgressGradient(hpPercentage) {
+                if (hpPercentage > 75) {
+                    return 'linear-gradient(90deg, #dc3545, #dc3545)'; // Red
+                } else if (hpPercentage > 50) {
+                    return 'linear-gradient(90deg, #ffc107, #fd7e14)'; // Yellow to Orange
+                } else if (hpPercentage > 25) {
+                    return 'linear-gradient(90deg, #17a2b8, #0dcaf0)'; // Light Blue
+                } else if (hpPercentage > 0) {
+                    return 'linear-gradient(90deg, #198754, #20c997)'; // Green
+                } else {
+                    return 'linear-gradient(90deg, #6c757d, #adb5bd)'; // Gray (defeated)
+                }
+            }
+            formatDate(dateString) {
+                if (!dateString) return 'No deadline';
+                try {
+                    return new Date(dateString).toLocaleDateString();
+                } catch {
+                    return 'Invalid date';
+                }
+            }
+            resetForm(formId) {
+                document.getElementById(formId).reset();
+            }
+            newGame() {
+                if (confirm("Are you sure you want to start a new game? This will erase all progress.")) {
+                    this.debts = [];
+                    this.payments = [];
+                    this.player = {
+                        level: 1,
+                        xp: 0,
+                        hp: 100,
+                        maxHp: 100,
+                        mp: 50,
+                        maxMp: 50,
+                        achievements: []
+                    };
+                    this.saveToLocalStorage();
+                    this.updateAllDisplays();
+                    localStorage.removeItem('questForFreedomData');
+                    this.showAchievement('New Game Started!');
+                }
+            }
+            saveToLocalStorage() {
+                const gameData = {
+                    debts: this.debts,
+                    payments: this.payments,
+                    player: this.player
+                };
+                localStorage.setItem('questForFreedomData', JSON.stringify(gameData));
+            }
+            removeDebt(id) {
+                this.debts = this.debts.filter(d => d.id !== id);
+                this.payments = this.payments.filter(p => p.debtId !== id);
+                this.saveToLocalStorage();
+                this.updateAllDisplays();
+                this.showAchievement('Quest abandoned!');
+            }
+            saveGame() {
+                const saveData = {
+                    debts: this.debts,
+                    payments: this.payments,
+                    player: this.player,
+                    saveDate: new Date().toISOString(),
+                    version: '1.0'
+                };
+                const blob = new Blob([JSON.stringify(saveData, null, 2)], {
+                    type: 'application/json'
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `quest_for_freedom_save_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                this.showAchievement('Game saved! Check your downloads folder.');
+            }
+            loadGame(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const saveData = JSON.parse(event.target.result);
+                        this.debts = saveData.debts || [];
+                        this.payments = saveData.payments || [];
+                        this.player = saveData.player || {
+                            level: 1,
+                            xp: 0,
+                            achievements: []
+                        };
+                        this.saveToLocalStorage();
+                        this.updateAllDisplays();
+                        this.showAchievement('Game loaded successfully!');
+                    } catch (error) {
+                        alert('Error loading game: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+            toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                const icon = newTheme === 'dark' ? 'bi-sun-fill' : 'bi-moon-fill';
+                document.getElementById('themeSwitcher').innerHTML = `<i class="bi ${icon}"></i>`;
+            }
+            getMonsterTier(amount) {
+                if (amount <= 250) return 'small';
+                if (amount <= 500) return 'medium';
+                if (amount <= 1000) return 'large';
+                return 'boss';
+            }
+            getMonsterEmoji(amount) {
+                const tier = this.getMonsterTier(amount);
+                const emojis = this.monsterTiers[tier];
+                return emojis[Math.floor(Math.random() * emojis.length)];
+            }
+            getCharacterDisplay() {
+                const level = this.player.level;
+                let equipment = Object.entries(this.equipmentTiers)
+                    .reverse()
+                    .find(([reqLevel]) => level >= reqLevel);
+                
+                return equipment ? equipment[1] : this.equipmentTiers[1];
+            }
+            getHpBadgeClass(hpPercentage) {
+                if (hpPercentage > 75) return 'bg-danger text-white';
+                if (hpPercentage > 50) return 'bg-warning text-dark';
+                if (hpPercentage > 25) return 'bg-info text-white';
+                return 'bg-success text-white';
+            }
+            getHpBarColor(hpPercentage) {
+                return `linear-gradient(
+        to bottom,
+        #34c924 0%,
+        #2ba818 50%,
+        #1d7b0e 51%,
+        #167008 100%
+    )`;
+            }
+        }
+        // Expose app for removeDebt button
+        window.app = new DebtQuest();
+
+        // Theme switcher functionality
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('themeSwitcher').innerHTML = `<i class="bi ${theme === 'dark' ? 'bi-sun-fill' : 'bi-moon-fill'}"></i>`;
+        })();
+    </script>
+</body>
+</html>
