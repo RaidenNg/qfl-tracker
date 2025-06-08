@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debt Freedom Quest</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --border-color: #dee2e6;
+            --menu-bg: #f8f9fa;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #6c8fc7;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #f8f9fa;
+            --border-color: #495057;
+            --menu-bg: #343a40;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .app-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .app-header h1 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #3a5a80;
+            border-color: #3a5a80;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            background: var(--card-bg);
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 700;
+            border-radius: 12px 12px 0 0 !important;
+        }
+
+        .progress {
+            height: 12px;
+            border-radius: 6px;
+            background-color: #e9ecef;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+        }
+
+        .debt-card {
+            transition: transform 0.3s;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .debt-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .debt-card.defeated {
+            border-left-color: var(--success-color);
+            opacity: 0.8;
+        }
+
+        .debt-card.high-priority {
+            border-left-color: var(--danger-color);
+        }
+
+        .debt-card.medium-priority {
+            border-left-color: var(--warning-color);
+        }
+
+        .theme-switcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .payment-strategy-card {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-strategy-card:hover {
+            transform: scale(1.03);
+        }
+
+        .payment-strategy-card.selected {
+            border: 2px solid var(--primary-color);
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+
+        .recommended-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .monster-emoji {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1050;
+            display: none;
+            animation: slideIn 0.5s, fadeOut 0.5s 3.5s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(74, 111, 165, 0.25);
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--text-color);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background: transparent;
+        }
+
+        .tooltip-icon {
+            cursor: pointer;
+            color: var(--primary-color);
+            margin-left: 0.5rem;
+        }
+
+        .suggested-payment-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .input-with-suggestions {
+            position: relative;
+        }
+
+        .monster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .monster-card {
+            background: var(--card-bg);
+            border: 3px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .monster-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .quest-details {
+            font-size: 0.8rem;
+            color: var(--text-color);
+        }
+
+        .quest-details small {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .monster-header {
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .monster-emoji {
+            font-size: 1.8rem;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+        }
+
+        .hp-bar-container {
+            position: relative;
+            height: 20px;
+            background: #2a2a2a;
+            border: 2px solid #454545;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .hp-bar {
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                #34c924 0%,
+                #2ba818 50%,
+                #1d7b0e 51%,
+                #167008 100%
+            );
+            transition: width 0.3s ease-out;
+        }
+
+        .hp-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+            font-size: 0.8rem;
+            z-index: 1;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .game-controls .btn {
+            font-family: 'Press Start 2P', system-ui, -apple-system, sans-serif;
+            font-size: 0.7rem;
+            padding: 0.5rem 1rem;
+            border-width: 2px;
+        }
+
+        .game-controls .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .game-controls .bi {
+            margin-right: 0.5rem;
+        }
+
+        /* Add to your existing styles */
+        @media (max-width: 768px) {
+    /* Header adjustments */
+    .app-header {
+        padding: 1rem 0;
+    }
+    
+    .app-header h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Game controls adjustment */
+    .game-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .game-controls .btn {
+        width: 100%;
+    }
+
+    /* Player stats cards */
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    /* Navigation tabs */
+    .nav-tabs .nav-link {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    /* Quest log adjustments */
+    .monster-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .monster-card {
+        margin-bottom: 0.5rem;
+    }
+
+    /* Button groups */
+    .btn-group {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .btn-group .btn {
+        width: 100%;
+        margin-bottom: 0.25rem;
+        border-radius: 4px !important;
+    }
+
+    /* Quest log header */
+    .quest-log-section .d-flex {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .quest-log-section h3 {
+        text-align: center;
+    }
+
+    /* Strategy cards */
+    .payment-strategy-card {
+        height: auto !important;
+    }
+
+    /* Table adjustments */
+    .table-responsive {
+        border: 0;
+    }
+
+    .table td, .table th {
+        font-size: 0.8rem;
+        padding: 0.5rem;
+    }
+
+    /* Form adjustments */
+    .input-group {
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        font-size: 16px; /* Prevents iOS zoom on focus */
+    }
+
+    /* Achievement popup */
+    .achievement-popup {
+        width: 90%;
+        left: 5%;
+        right: 5%;
+        font-size: 0.9rem;
+    }
+
+    /* Theme switcher */
+    .theme-switcher {
+        bottom: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 375px) {
+    .app-header h1 {
+        font-size: 1.2rem;
+    }
+
+    .monster-emoji {
+        font-size: 1.2rem;
+    }
+
+    .hp-text {
+        font-size: 0.7rem;
+    }
+
+    .quest-details small {
+        font-size: 0.7rem;
+    }
+}
+        </style>
+</head>
+<body>
+    <!-- Achievement Popup -->
+    <div id="achievementPopup" class="achievement-popup">
+        <div><i class="bi bi-trophy-fill"></i> Achievement Unlocked!</div>
+        <div id="achievementText"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- App Header -->
+        <div class="app-header">
+            <div class="container">
+                <h1><i class="bi bi-cash-coin"></i> Debt Freedom Quest</h1>
+                <p class="lead">Smart strategies to conquer your debts</p>
+
+                <!-- Add this after the header text in the app-header div -->
+                <div class="game-controls mt-3">
+                    <button class="btn btn-outline-light" onclick="app.newGame()">
+                        <i class="bi bi-plus-circle"></i> New Game
+                    </button>
+                    <button class="btn btn-outline-light" onclick="app.saveGame()">
+                        <i class="bi bi-download"></i> Save Game
+                    </button>
+                    <button class="btn btn-outline-light" onclick="app.loadGame()">
+                        <i class="bi bi-upload"></i> Load Game
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <!-- Player Stats -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <span class="monster-emoji">🧙‍♂️</span>
+                            </div>
+                            <h4>Debt Slayer</h4>
+                            <div class="level-badge bg-primary text-white rounded-pill d-inline-block px-3 py-1 mb-3">
+                                Level <span id="playerLevel">1</span>
+                            </div>
+                            <div class="progress mb-2">
+                                <div id="xpProgress" class="progress-bar" role="progressbar"></div>
+                            </div>
+                            <small class="text-muted">
+                                <span id="currentXP">0</span>/<span id="requiredXP">100</span> XP
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <h3 class="mb-1">$<span id="totalDebt">0.00</span></h3>
+                                    <small class="text-muted">Total Debt</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="mb-1">$<span id="totalPaid">0.00</span></h3>
+                                    <small class="text-muted">Paid Off</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="mb-1"><span id="overallProgress">0</span>%</h3>
+                                    <small class="text-muted">Progress</small>
+                                </div>
+                            </div>
+                            <div class="progress mt-3" style="height: 16px;">
+                                <div id="overallProgressBar" class="progress-bar" role="progressbar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#debtsTab">
+                        <i class="bi bi-list-ul"></i> My Debts
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#payoffTab">
+                        <i class="bi bi-lightning-charge"></i> Payoff Strategies
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#addDebtTab">
+                        <i class="bi bi-plus-circle"></i> Add Debt
+                    </button>
+                </li>
+            </ul>
+            
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Debts Tab -->
+                <div class="tab-pane fade show active" id="debtsTab">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h4><i class="bi bi-list-ul"></i> My Debts</h4>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="btn-group">
+                                <button class="btn btn-outline-primary btn-sm" onclick="app.sortDebts('asc')">
+                                    <i class="bi bi-sort-numeric-up"></i> Smallest First
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="app.sortDebts('desc')">
+                                    <i class="bi bi-sort-numeric-down"></i> Largest First
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="debtList" class="row">
+                        <!-- Debts will be loaded here -->
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> You don't have any debts yet. Add your first debt to get started!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payoff Strategies Tab -->
+                <div class="tab-pane fade" id="payoffTab">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <h4><i class="bi bi-lightning-charge"></i> Payoff Strategies</h4>
+                            <p class="text-muted">Choose a strategy that works best for your situation</p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="totalPaymentAmount" 
+                                       min="0.01" step="0.01" placeholder="Payment amount">
+                                <button class="btn btn-primary" onclick="app.calculatePayments()">
+                                    Calculate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="card payment-strategy-card h-100" onclick="app.selectStrategy('snowball')">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-snow2" style="font-size: 2rem; color: var(--primary-color);"></i>
+                                    <h5 class="mt-2">Snowball</h5>
+                                    <p class="text-muted small">Pay smallest debts first for quick wins</p>
+                                    <div class="d-flex justify-content-center">
+                                        <span class="badge bg-primary">Recommended</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card payment-strategy-card h-100" onclick="app.selectStrategy('avalanche')">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-mountain" style="font-size: 2rem; color: var(--danger-color);"></i>
+                                    <h5 class="mt-2">Avalanche</h5>
+                                    <p class="text-muted small">Pay highest interest first to save money</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card payment-strategy-card h-100" onclick="app.selectStrategy('hybrid')">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-arrow-left-right" style="font-size: 2rem; color: var(--warning-color);"></i>
+                                    <h5 class="mt-2">Hybrid</h5>
+                                    <p class="text-muted small">Balance between quick wins and savings</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card payment-strategy-card h-100" onclick="app.selectStrategy('custom')">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-sliders" style="font-size: 2rem; color: var(--info-color);"></i>
+                                    <h5 class="mt-2">Custom</h5>
+                                    <p class="text-muted small">Manually allocate your payment</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-calculator"></i> Payment Plan</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="strategyResults" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Debt</th>
+                                            <th>Remaining</th>
+                                            <th>Payment</th>
+                                            <th>New Balance</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="strategyTableBody">
+                                        <!-- Strategy results will be loaded here -->
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-4">
+                                                Select a strategy and enter a payment amount to see recommendations
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <strong>Total Payment:</strong> $<span id="totalPaymentDisplay">0.00</span>
+                                </div>
+                                <button class="btn btn-success" onclick="app.makePayments()">
+                                    <i class="bi bi-check-circle"></i> Make Payments
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add Debt Tab -->
+                <div class="tab-pane fade" id="addDebtTab">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Add New Debt</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="addDebtForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Debt Name</label>
+                                    <input type="text" class="form-control" id="debtName" 
+                                           placeholder="Credit Card, Student Loan, Car Loan..." required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Original Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="debtAmount" 
+                                               min="0.01" step="0.01" placeholder="0.00" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Current Balance</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="currentBalance" 
+                                               min="0.01" step="0.01" placeholder="0.00" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Interest Rate (APR)</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="interestRate" 
+                                               min="0" step="0.01" placeholder="0.00">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Minimum Payment</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="minPayment" 
+                                               min="0.01" step="0.01" placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Due Date</label>
+                                    <input type="date" class="form-control" id="dueDate">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-plus-circle"></i> Add Debt
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quest Log Section -->
+            <div class="quest-log-section mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="mb-0">
+                        <i class="bi bi-journal-bookmark"></i> Quest Log
+                    </h3>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline-primary" onclick="app.sortMonsters('asc')">
+                            <i class="bi bi-sort-numeric-up"></i> Lowest HP ($)
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="app.sortMonsters('desc')">
+                            <i class="bi bi-sort-numeric-down"></i> Highest HP ($)
+                        </button>
+                    </div>
+                </div>
+                <div id="monsterList" class="monster-grid">
+                    <!-- Monsters will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="theme-switcher" id="themeSwitcher">
+        <i class="bi bi-moon-fill"></i>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class DebtFreedomQuest {
+            constructor() {
+                // Load saved data from localStorage or use defaults
+                const savedData = JSON.parse(localStorage.getItem('debtFreedomData')) || {};
+                this.debts = savedData.debts || [];
+                this.payments = savedData.payments || [];
+                this.player = savedData.player || {
+                    level: 1,
+                    xp: 0,
+                    achievements: []
+                };
+                this.selectedStrategy = null;
+                this.paymentAllocations = {};
+                this.achievementTimeout = null;
+                
+                // Initialize monster emojis
+                this.monsterEmojis = {
+                    small: ['🐛', '🐜', '🐞', '🦗'],
+                    medium: ['🦎', '🐍', '🦂', '🐊'],
+                    large: ['🐉', '🐲', '🦖', '👹'],
+                    boss: ['👿', '💀', '🔥', '⚡']
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.updateAllDisplays();
+                
+                // Set default date for new payments
+                const today = new Date();
+                const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+                document.getElementById('dueDate').valueAsDate = nextMonth;
+            }
+            
+            bindEvents() {
+                document.getElementById('addDebtForm').addEventListener('submit', (e) => this.addDebt(e));
+                document.getElementById('themeSwitcher').addEventListener('click', () => this.toggleTheme());
+            }
+            
+            addDebt(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('debtName').value.trim();
+                const amount = parseFloat(document.getElementById('debtAmount').value);
+                const currentBalance = parseFloat(document.getElementById('currentBalance').value) || amount;
+                const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+                const minPayment = parseFloat(document.getElementById('minPayment').value) || 0;
+                const dueDate = document.getElementById('dueDate').value;
+                
+                if (!name || !amount || amount <= 0) {
+                    this.showAchievement('Please enter a valid debt name and amount greater than 0.');
+                    return;
+                }
+                
+                const debt = {
+                    id: Date.now(),
+                    name,
+                    originalAmount: amount,
+                    currentBalance: currentBalance,
+                    interestRate: interestRate,
+                    minPayment: minPayment,
+                    dueDate: dueDate,
+                    dateAdded: new Date().toISOString()
+                };
+                
+                this.debts.push(debt);
+                this.saveToLocalStorage();
+                this.checkAchievements('debt_added');
+                this.updateAllDisplays();
+                this.resetForm('addDebtForm');
+                this.showAchievement('New debt monster summoned! 🎯');
+            }
+            
+            sortDebts(direction = 'asc') {
+                this.debts.sort((a, b) => {
+                    if (direction === 'asc') {
+                        return a.currentBalance - b.currentBalance;
+                    } else {
+                        return b.currentBalance - a.currentBalance;
+                    }
+                });
+                this.updateDebtList();
+                this.saveToLocalStorage();
+            }
+            
+            selectStrategy(strategy) {
+                this.selectedStrategy = strategy;
+                
+                // Update UI to show selected strategy
+                document.querySelectorAll('.payment-strategy-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                event.currentTarget.classList.add('selected');
+                
+                // If payment amount is already entered, calculate immediately
+                const paymentAmount = parseFloat(document.getElementById('totalPaymentAmount').value);
+                if (paymentAmount) {
+                    this.calculatePayments();
+                }
+            }
+            
+            calculatePayments() {
+                const paymentAmount = parseFloat(document.getElementById('totalPaymentAmount').value);
+                
+                if (!paymentAmount || paymentAmount <= 0) {
+                    this.showAchievement('Please enter a valid payment amount greater than 0.');
+                    return;
+                }
+                
+                if (!this.selectedStrategy) {
+                    this.showAchievement('Please select a payoff strategy first.');
+                    return;
+                }
+                
+                // Filter active debts (with balance > 0)
+                let activeDebts = this.debts.filter(d => d.currentBalance > 0);
+                
+                // Sort debts based on selected strategy
+                switch(this.selectedStrategy) {
+                    case 'snowball':
+                        // Snowball: smallest balance first
+                        activeDebts.sort((a, b) => a.currentBalance - b.currentBalance);
+                        break;
+                    case 'avalanche':
+                        // Avalanche: highest interest first
+                        activeDebts.sort((a, b) => b.interestRate - a.interestRate);
+                        break;
+                    case 'hybrid':
+                        // Hybrid: balance between snowball and avalanche
+                        activeDebts.sort((a, b) => {
+                            // Prioritize high interest but also consider small balances
+                            const aScore = a.interestRate * 10 + (1000 / (a.currentBalance || 1));
+                            const bScore = b.interestRate * 10 + (1000 / (b.currentBalance || 1));
+                            return bScore - aScore;
+                        });
+                        break;
+                    case 'custom':
+                        // Custom: no sorting, user will allocate manually
+                        break;
+                }
+                
+                // Calculate payments for each debt
+                let remainingPayment = paymentAmount;
+                this.paymentAllocations = {};
+                
+                // First pass: pay minimums on all debts except the first
+                if (this.selectedStrategy !== 'custom') {
+                    for (let i = 0; i < activeDebts.length; i++) {
+                        const debt = activeDebts[i];
+                        let payment = 0;
+                        
+                        if (i === 0) {
+                            // Focus all remaining payment on first debt
+                            payment = Math.min(debt.currentBalance, remainingPayment);
+                        } else {
+                            // Pay minimum on other debts if specified
+                            payment = Math.min(debt.minPayment || 0, debt.currentBalance, remainingPayment);
+                        }
+                        
+                        this.paymentAllocations[debt.id] = payment;
+                        remainingPayment -= payment;
+                        
+                        // If we've used up all payment, break
+                        if (remainingPayment <= 0) break;
+                    }
+                }
+                
+                // Update the strategy table
+                this.updateStrategyTable();
+            }
+            
+            updateStrategyTable() {
+                const tableBody = document.getElementById('strategyTableBody');
+                tableBody.innerHTML = '';
+                
+                let totalPayment = 0;
+                const activeDebts = this.debts.filter(d => d.currentBalance > 0);
+                
+                activeDebts.forEach(debt => {
+                    const payment = this.paymentAllocations[debt.id] || 0;
+                    totalPayment += payment;
+                    const newBalance = Math.max(0, debt.currentBalance - payment);
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <strong>${debt.name}</strong>
+                            ${debt.interestRate ? `<br><small class="text-muted">${debt.interestRate}% APR</small>` : ''}
+                        </td>
+                        <td>$${debt.currentBalance.toFixed(2)}</td>
+                        <td>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control payment-amount" 
+                                       data-debt-id="${debt.id}"
+                                       value="${payment.toFixed(2)}"
+                                       min="0" 
+                                       max="${debt.currentBalance}"
+                                       step="0.01">
+                            </div>
+                        </td>
+                        <td>$${newBalance.toFixed(2)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="app.suggestPayment(${debt.id})">
+                                <i class="bi bi-lightbulb"></i> Suggest
+                            </button>
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Update total payment display
+                document.getElementById('totalPaymentDisplay').textContent = totalPayment.toFixed(2);
+                
+                // Add event listeners to payment amount inputs
+                document.querySelectorAll('.payment-amount').forEach(input => {
+                    input.addEventListener('change', (e) => {
+                        const debtId = parseInt(e.target.dataset.debtId);
+                        const amount = parseFloat(e.target.value) || 0;
+                        this.paymentAllocations[debtId] = amount;
+                        this.updateStrategyTable();
+                    });
+                });
+            }
+            
+            suggestPayment(debtId) {
+                const debt = this.debts.find(d => d.id === debtId);
+                if (!debt) return;
+                
+                // Calculate suggested payment (minimum payment + extra)
+                let suggestedPayment = debt.minPayment || 0;
+                
+                // Add 10% of remaining balance as extra payment
+                suggestedPayment += debt.currentBalance * 0.1;
+                
+                // Don't exceed remaining balance
+                suggestedPayment = Math.min(suggestedPayment, debt.currentBalance);
+                
+                // Update the payment amount
+                this.paymentAllocations[debtId] = suggestedPayment;
+                this.updateStrategyTable();
+                
+                // Focus on the input field
+                const input = document.querySelector(`.payment-amount[data-debt-id="${debtId}"]`);
+                if (input) {
+                    input.focus();
+                }
+            }
+            
+            makePayments() {
+                // Validate payments
+                let totalPayment = 0;
+                let paymentsMade = 0;
+                
+                for (const debtId in this.paymentAllocations) {
+                    const payment = this.paymentAllocations[debtId];
+                    if (payment > 0) {
+                        totalPayment += payment;
+                        paymentsMade++;
+                        
+                        // Apply payment to debt
+                        const debt = this.debts.find(d => d.id === parseInt(debtId));
+                        if (debt) {
+                            debt.currentBalance -= payment;
+                            
+                            // Record payment
+                            this.payments.push({
+                                id: Date.now(),
+                                debtId: debt.id,
+                                amount: payment,
+                                date: new Date().toISOString(),
+                                strategy: this.selectedStrategy
+                            });
+                        }
+                    }
+                }
+                
+                if (totalPayment <= 0) {
+                    this.showAchievement('No payments were made. Please allocate some payment amounts.');
+                    return;
+                }
+                
+                // Grant XP based on payment amount
+                const xpGained = Math.floor(totalPayment / 10); // 1 XP per $10 paid
+                this.player.xp += xpGained;
+                
+                // Check for level up
+                this.checkLevelUp();
+                
+                // Save and update displays
+                this.saveToLocalStorage();
+                this.updateAllDisplays();
+                
+                // Show achievement
+                this.showAchievement(`Success! Made ${paymentsMade} payment(s) totaling $${totalPayment.toFixed(2)}. Gained ${xpGained} XP!`);
+                
+                // Reset payment form
+                document.getElementById('totalPaymentAmount').value = '';
+                this.paymentAllocations = {};
+                this.updateStrategyTable();
+                
+                // Switch to debts tab to see updated balances
+                document.querySelector('[data-bs-target="#debtsTab"]').click();
+            }
+            
+            checkLevelUp() {
+                const requiredXP = this.getRequiredXP(this.player.level);
+                if (this.player.xp >= requiredXP) {
+                    this.player.level++;
+                    this.player.xp -= requiredXP;
+                    this.showAchievement(`🌟 LEVEL UP! You are now level ${this.player.level}!`);
+                    
+                    // Check if we leveled up multiple times
+                    if (this.player.xp >= this.getRequiredXP(this.player.level)) {
+                        this.checkLevelUp();
+                    }
+                }
+            }
+            
+            getRequiredXP(level) {
+                return level * 100;
+            }
+            
+            checkAchievements(type, data = {}) {
+                const achievements = [];
+                
+                if (type === 'debt_added' && this.debts.length === 1 && !this.hasAchievement('first_debt')) {
+                    achievements.push({ id: 'first_debt', text: 'First debt added! Your journey begins.', xp: 10 });
+                }
+                
+                if (type === 'payment_made') {
+                    if (this.payments.length === 1 && !this.hasAchievement('first_payment')) {
+                        achievements.push({ id: 'first_payment', text: 'First payment made! Keep it up!', xp: 20 });
+                    }
+                    
+                    if (data.payment.amount >= 500 && !this.hasAchievement('big_payment')) {
+                        achievements.push({ id: 'big_payment', text: 'Big payment! $500+ paid in one go!', xp: 50 });
+                    }
+                }
+                
+                const progress = this.getOverallProgress();
+                if (progress >= 25 && !this.hasAchievement('quarter_way')) {
+                    achievements.push({ id: 'quarter_way', text: '25% debt-free! Making progress!', xp: 30 });
+                }
+                
+                if (progress >= 50 && !this.hasAchievement('half_way')) {
+                    achievements.push({ id: 'half_way', text: 'Halfway there! You can do this!', xp: 50 });
+                }
+                
+                if (progress >= 75 && !this.hasAchievement('three_quarters')) {
+                    achievements.push({ id: 'three_quarters', text: '75% debt-free! Almost there!', xp: 75 });
+                }
+                
+                if (progress >= 100 && !this.hasAchievement('debt_free')) {
+                    achievements.push({ id: 'debt_free', text: 'DEBT FREE! Congratulations!', xp: 200 });
+                }
+                
+                // Add achievements to player
+                achievements.forEach(achievement => {
+                    this.player.achievements.push(achievement.id);
+                    this.player.xp += achievement.xp;
+                    this.showAchievement(achievement.text);
+                });
+            }
+            
+            hasAchievement(id) {
+                return this.player.achievements.includes(id);
+            }
+            
+            getOverallProgress() {
+                const totalOriginal = this.debts.reduce((sum, debt) => sum + debt.originalAmount, 0);
+                const totalRemaining = this.debts.reduce((sum, debt) => sum + debt.currentBalance, 0);
+                return totalOriginal > 0 ? ((totalOriginal - totalRemaining) / totalOriginal) * 100 : 0;
+            }
+            
+            showAchievement(text) {
+                const popup = document.getElementById('achievementPopup');
+                const textElement = document.getElementById('achievementText');
+                textElement.textContent = text;
+                popup.style.display = 'block';
+                
+                // Clear any existing timeout
+                if (this.achievementTimeout) {
+                    clearTimeout(this.achievementTimeout);
+                }
+                
+                // Set new timeout
+                this.achievementTimeout = setTimeout(() => {
+                    popup.style.display = 'none';
+                }, 4000);
+            }
+            
+            updateAllDisplays() {
+                this.updatePlayerStats();
+                this.updateDebtSummary();
+                this.updateDebtList();    // Regular table view
+                this.updateQuestLog();    // Monster cards view
+            }
+            
+            updatePlayerStats() {
+                const requiredXP = this.getRequiredXP(this.player.level);
+                const xpPercentage = (this.player.xp / requiredXP) * 100;
+                
+                document.getElementById('playerLevel').textContent = this.player.level;
+                document.getElementById('currentXP').textContent = this.player.xp;
+                document.getElementById('requiredXP').textContent = requiredXP;
+                document.getElementById('xpProgress').style.width = `${xpPercentage}%`;
+                document.getElementById('xpProgress').setAttribute('aria-valuenow', xpPercentage);
+            }
+            
+            updateDebtSummary() {
+                const totalOriginal = this.debts.reduce((sum, debt) => sum + debt.originalAmount, 0);
+                const totalRemaining = this.debts.reduce((sum, debt) => sum + debt.currentBalance, 0);
+                const totalPaid = totalOriginal - totalRemaining;
+                const progress = this.getOverallProgress();
+                
+                document.getElementById('totalDebt').textContent = totalOriginal.toFixed(2);
+                document.getElementById('totalPaid').textContent = totalPaid.toFixed(2);
+                document.getElementById('overallProgress').textContent = progress.toFixed(0);
+                document.getElementById('overallProgressBar').style.width = `${progress}%`;
+                document.getElementById('overallProgressBar').setAttribute('aria-valuenow', progress);
+            }
+            
+            updateDebtList() {
+                const container = document.getElementById('debtList');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                if (this.debts.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> You don't have any debts yet. Add your first debt to get started!
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Regular debt list view (table format)
+                container.innerHTML = `
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Debt Name</th>
+                                        <th>Original Amount</th>
+                                        <th>Current Balance</th>
+                                        <th>Interest Rate</th>
+                                        <th>Due Date</th>
+                                        <th>Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${this.debts.map(debt => `
+                                        <tr>
+                                            <td>${debt.name}</td>
+                                            <td>$${debt.originalAmount.toFixed(2)}</td>
+                                            <td>$${debt.currentBalance.toFixed(2)}</td>
+                                            <td>${debt.interestRate}%</td>
+                                            <td>${this.formatDate(debt.dueDate)}</td>
+                                            <td>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar" role="progressbar" 
+                                                         style="width: ${((debt.originalAmount - debt.currentBalance) / debt.originalAmount * 100)}%">
+                                                        ${((debt.originalAmount - debt.currentBalance) / debt.originalAmount * 100).toFixed(1)}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            updateQuestLog() {
+                const container = document.getElementById('monsterList');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                if (this.debts.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state text-center p-4">
+                            <i class="bi bi-journal-x fs-1"></i>
+                            <h5 class="mt-3">No Active Quests</h5>
+                            <p>Add your first debt monster to begin your epic journey!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                this.debts.forEach(debt => {
+                    const isDefeated = debt.currentBalance <= 0;
+                    const progress = ((debt.originalAmount - debt.currentBalance) / debt.originalAmount) * 100;
+                    const hpPercentage = (debt.currentBalance / debt.originalAmount) * 100;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'monster-card mb-3';
+                    const monsterClass = this.getMonsterClass(debt.originalAmount, isDefeated);
+                    
+                    card.innerHTML = `
+                        <div class="card-header monster-header ${monsterClass}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="monster-emoji">${this.getMonsterEmoji(debt.originalAmount, isDefeated)}</span>
+                                    <h5 class="mb-0 ms-2">${debt.name}</h5>
+                                </div>
+                                <button class="btn btn-sm btn-close abandon-quest" 
+                                        onclick="app.removeDebt(${debt.id})"
+                                        aria-label="Abandon Quest"></button>
+                            </div>
+                            <div class="hp-bar-container mt-2">
+                                <div class="hp-text">$${debt.currentBalance.toFixed(2)} / $${debt.originalAmount.toFixed(2)}</div>
+                                <div class="hp-bar" style="width: ${hpPercentage}%;"></div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="quest-details">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <small>🗓️ Due Date: ${this.formatDate(debt.dueDate)}</small>
+                                    <small>⚔️ Progress: ${progress.toFixed(1)}%</small>
+                                </div>
+                                ${debt.interestRate ? `
+                                    <div class="d-flex justify-content-between">
+                                        <small>💰 Min Payment: $${debt.minPayment?.toFixed(2) || '0.00'}</small>
+                                        <small>📈 APR: ${debt.interestRate}%</small>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-sm btn-success w-100" onclick="app.quickAttack(${debt.id})">
+                                    <i class="bi bi-lightning-charge"></i> Quick Attack
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+            }
+            
+            getMonsterEmoji(amount, isDefeated) {
+                // Return skull for defeated monsters
+                if (isDefeated) return '💀';
+                
+                // Otherwise return monster based on amount
+                if (amount > 1000) {
+                    const index = Math.floor(Math.random() * this.monsterEmojis.boss.length);
+                    return this.monsterEmojis.boss[index];
+                } else if (amount > 500) {
+                    const index = Math.floor(Math.random() * this.monsterEmojis.large.length);
+                    return this.monsterEmojis.large[index];
+                } else if (amount > 250) {
+                    const index = Math.floor(Math.random() * this.monsterEmojis.medium.length);
+                    return this.monsterEmojis.medium[index];
+                } else {
+                    const index = Math.floor(Math.random() * this.monsterEmojis.small.length);
+                    return this.monsterEmojis.small[index];
+                }
+            }
+            
+            // Add this method to the DebtFreedomQuest class
+            formatDate(dateString) {
+                if (!dateString) return 'Not set';
+                return new Date(dateString).toLocaleDateString();
+            }
+            
+            // Add this method to the DebtFreedomQuest class
+            saveToLocalStorage() {
+                const data = {
+                    debts: this.debts,
+                    payments: this.payments,
+                    player: this.player
+                };
+                localStorage.setItem('debtFreedomData', JSON.stringify(data));
+            }
+            
+            // Add this method to the DebtFreedomQuest class
+            resetForm(formId) {
+                const form = document.getElementById(formId);
+                if (form) {
+                    form.reset();
+                    // Reset any custom form states
+                    document.querySelectorAll('.payment-strategy-card').forEach(card => {
+                        card.classList.remove('selected');
+                    });
+                }
+           }
+            
+            // Add this method to the DebtFreedomQuest class
+            removeDebt(id) {
+                if (!confirm('Are you sure you want to remove this debt? This action cannot be undone.')) {
+                    return;
+                }
+                
+                const index = this.debts.findIndex(d => d.id === id);
+                if (index !== -1) {
+                    this.debts.splice(index, 1);
+                    this.saveToLocalStorage();
+                    this.updateAllDisplays();
+                    this.showAchievement('Debt removed successfully!');
+                }
+            }
+
+            saveGame() {
+                const gameData = {
+                    debts: this.debts,
+                    payments: this.payments,
+                    player: this.player,
+                    version: '1.0.0',
+                    savedAt: new Date().toISOString()
+                };
+
+                const blob = new Blob([JSON.stringify(gameData, null, 2)], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `debt-quest-save-${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                this.showAchievement('Game saved successfully! 💾');
+            }
+
+            loadGame() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = (event) => {
+                        try {
+                            const gameData = JSON.parse(event.target.result);
+                            
+                            // Validate save file
+                            if (!gameData.version || !gameData.debts || !gameData.player) {
+                                throw new Error('Invalid save file format');
+                            }
+                            
+                            this.debts = gameData.debts;
+                            this.payments = gameData.payments;
+                            this.player = gameData.player;
+                            
+                            this.saveToLocalStorage();
+                            this.updateAllDisplays();
+                            this.showAchievement('Game loaded successfully! 📥');
+                        } catch (error) {
+                            this.showAchievement('Error loading save file: ' + error.message);
+                        }
+                    };
+                    
+                    reader.readAsText(file);
+                };
+                
+                input.click();
+            }
+
+            newGame() {
+                if (!confirm('Are you sure you want to start a new game? All current progress will be lost!')) {
+                    return;
+                }
+
+                // Reset all data
+                this.debts = [];
+                this.payments = [];
+                this.player = {
+                    level: 1,
+                    xp: 0,
+                    achievements: []
+                };
+                this.selectedStrategy = null;
+                this.paymentAllocations = {};
+
+                // Clear localStorage
+                localStorage.removeItem('debtFreedomData');
+
+                // Update UI
+                this.updateAllDisplays();
+                this.showAchievement('New game started! Welcome to Debt Freedom Quest! 🎮');
+            }
+
+            // Update the getMonsterClass method in the DebtFreedomQuest class
+            getMonsterClass(originalAmount, isDefeated) {
+                if (isDefeated) return 'bg-secondary text-white';
+                
+                // More granular HP-based coloring
+                if (originalAmount > 2000) {
+                    return 'bg-purple text-white boss-elite'; // Elite Boss
+                } else if (originalAmount > 1000) {
+                    return 'bg-indigo text-white boss-card'; // Boss
+                } else if (originalAmount > 750) {
+                    return 'bg-danger text-white strong-monster'; // Strong
+                } else if (originalAmount > 500) {
+                    return 'bg-orange text-white medium-monster'; // Medium-Strong
+                } else if (originalAmount > 250) {
+                    return 'bg-warning text-dark weak-monster'; // Weak
+                } else {
+                    return 'bg-success text-white basic-monster'; // Basic
+                }
+            }
+
+            quickAttack(debtId) {
+                const debt = this.debts.find(d => d.id === debtId);
+                if (!debt) return;
+                
+                const suggestedPayment = Math.min(
+                    debt.currentBalance,
+                    Math.max(debt.minPayment || 25, debt.currentBalance * 0.1)
+                );
+                
+                const amount = parseFloat(prompt(
+                    `Enter attack amount (suggested: $${suggestedPayment.toFixed(2)})`,
+                    suggestedPayment.toFixed(2)
+                ));
+                
+                if (!amount || amount <= 0 || amount > debt.currentBalance) {
+                    this.showAchievement('Invalid attack amount!');
+                    return;
+                }
+                
+                // Apply damage
+                debt.currentBalance -= amount;
+                
+                // Record payment
+                this.payments.push({
+                    id: Date.now(),
+                    debtId: debt.id,
+                    amount: amount,
+                    date: new Date().toISOString(),
+                    strategy: 'quick_attack'
+                });
+                
+                // Grant XP
+                const xpGained = Math.ceil(amount / 10);
+                this.player.xp += xpGained;
+                
+                // Check for defeat
+                if (debt.currentBalance <= 0) {
+                    this.showAchievement(`💀 ${debt.name} DEFEATED! +${xpGained * 2} XP`);
+                    this.player.xp += xpGained; // Bonus XP for defeating
+                } else {
+                    this.showAchievement(`⚔️ ${amount.toFixed(2)} damage dealt to ${debt.name}! +${xpGained} XP`);
+                }
+                
+                this.checkLevelUp();
+                this.saveToLocalStorage();
+                this.updateAllDisplays();
+            }
+
+            // Add this method to the DebtFreedomQuest class
+            sortMonsters(direction = 'asc') {
+                this.debts.sort((a, b) => {
+                    // Use currentBalance for HP comparison
+                    if (direction === 'asc') {
+                        // Sort by lowest HP first
+                        return a.currentBalance - b.currentBalance;
+                    } else {
+                        // Sort by highest HP first
+                        return b.currentBalance - a.currentBalance;
+                    }
+                });
+                
+                // Update the display after sorting
+                this.updateQuestLog();
+                this.saveToLocalStorage();
+            }
+        }
+        
+        const app = new DebtFreedomQuest();
+    </script>
+</body>
+</html>
