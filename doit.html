@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Tasks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset */
+        body, h1, h2, p, ul, li {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+        }
+
+        /* Theme Variables */
+        :root {
+            --primary: #4A90E2;
+            --bg: #F5F6FA;
+            --text: #2F3542;
+            --border: #70A1FF;
+            --success: #2ED573;
+            --danger: #FF4757;
+            --window-bg: #FFFFFF;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #5C9CE0;
+            --bg: #1A1B1E;
+            --text: #E4E6EB;
+            --window-bg: #2C2D30;
+            --border: #3E4044;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 20px auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Header */
+        .gang-stats {
+            background: var(--window-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px var(--shadow);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .reputation-bar {
+            background: var(--bg);
+            height: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 2px solid var(--border);
+        }
+
+        .reputation-fill {
+            background: var(--primary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .menu-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Mission Input */
+        .mission-input {
+            background: var(--window-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mission-input input,
+        .mission-input select {
+            font-family: inherit;
+            font-size: 14px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            background: var(--window-bg);
+            color: var(--text);
+            box-sizing: border-box;
+        }
+
+        .mission-input button {
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .mission-input button:hover {
+            opacity: 0.8;
+        }
+
+        /* Mission List */
+        .mission {
+            background: var(--window-bg);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px var(--shadow);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 6px solid var(--primary);
+            position: relative;
+        }
+
+        .mission.completed {
+            opacity: 0.7;
+            text-decoration: line-through;
+            border-left-color: var(--success);
+        }
+
+        .mission.failed {
+            opacity: 0.6;
+            border-left-color: var(--danger);
+        }
+
+        .mission .rank-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .mission .mission-text {
+            font-size: 15px;
+            margin-bottom: 8px;
+            padding-right: 50px;
+        }
+
+        .mission .timer {
+            font-size: 12px;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .mission .mission-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .mission .mission-actions button {
+            padding: 8px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .mission .complete-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .mission .delete-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Menu Overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .menu-overlay.active {
+            display: flex;
+        }
+
+        .menu-content {
+            background: var(--window-bg);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 90%;
+            max-width: 320px;
+        }
+
+        .menu-content button {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* Alert */
+        .alert {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--window-bg);
+            color: var(--text);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px var(--shadow);
+            font-size: 14px;
+            z-index: 200;
+        }
+
+        /* Media Queries */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+                margin: 10px auto;
+            }
+
+            .gang-stats,
+            .mission-input {
+                padding: 15px;
+            }
+
+            .mission {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Stats Header -->
+        <div class="gang-stats">
+            <h2>LEVEL <span id="level">1</span></h2>
+            <div class="reputation-bar">
+                <div class="reputation-fill" id="repBar"></div>
+            </div>
+            <div class="rep-text">
+                <span id="rep">0</span>/<span id="nextLevel">100</span> REP
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="menu-btn" onclick="gang.toggleMenu()">☰ MENU</button>
+        </div>
+
+        <!-- Mission Input -->
+        <div class="mission-input">
+            <input type="text" id="todoInput" placeholder="Enter your mission..." autocomplete="off">
+            <select id="missionRank">
+                <option value="C">C RANK</option>
+                <option value="B">B RANK</option>
+                <option value="A">A RANK</option>
+                <option value="S">S RANK</option>
+            </select>
+            <select id="missionDeadline" required>
+                <option value="">Select Deadline</option>
+            </select>
+            <button onclick="gang.addMission()">ADD MISSION</button>
+        </div>
+
+        <!-- Mission List -->
+        <div id="missionList"></div>
+
+        <!-- Menu Overlay -->
+        <div class="menu-overlay" id="menuOverlay">
+            <div class="menu-content">
+                <h3>MENU</h3>
+                <button onclick="gang.saveToFile()">💾 Save Game</button>
+                <button onclick="gang.loadFromFile()">📂 Load Game</button>
+                <button onclick="gang.newGame()">🎮 New Game</button>
+                <button onclick="gang.sortMissions('rank')">Sort by Rank</button>
+                <button onclick="gang.sortMissions('deadline')">Sort by Time</button>
+                <button onclick="gang.toggleTheme()">🌓 Toggle Theme</button>
+                <button onclick="gang.toggleMenu()">✕ Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Mission {
+            constructor(text, rank, deadline) {
+                this.id = Date.now();
+                this.text = text;
+                this.rank = rank;
+                this.deadline = deadline;
+                this.completed = false;
+                this.failed = false;
+                this.reward = this.calculateReward();
+                this.timeLeft = '';
+            }
+
+            calculateReward() {
+                const base = Math.floor(Math.random() * 30) + 20;
+                const multipliers = { S: 3, A: 2, B: 1.5, C: 1 };
+                return Math.floor(base * (multipliers[this.rank] || 1));
+            }
+        }
+
+        class StreetGang {
+            constructor() {
+                this.missions = JSON.parse(localStorage.getItem('missions')) || [];
+                this.stats = JSON.parse(localStorage.getItem('stats')) || { level: 1, rep: 0, nextLevel: 100 };
+                
+                this.initializeDeadlines();
+                this.render();
+                this.updateStats();
+                this.timerInterval = setInterval(() => this.updateTimers(), 60000);
+                this.updateTimers();
+                this.initThemeToggle();
+                
+                // Enter key support
+                document.getElementById('todoInput').addEventListener('keypress', e => {
+                    if (e.key === 'Enter') this.addMission();
+                });
+            }
+
+            initializeDeadlines() {
+                const deadlines = [
+                    { days: 1, text: '24 HOURS' },
+                    { days: 3, text: '3 DAYS' },
+                    { days: 7, text: '1 WEEK' },
+                    { days: 14, text: '2 WEEKS' },
+                    { days: 30, text: '1 MONTH' }
+                ];
+                const select = document.getElementById('missionDeadline');
+                select.innerHTML = '<option value="">Select Deadline</option>';
+                deadlines.forEach(({ days, text }) => {
+                    const date = new Date();
+                    date.setDate(date.getDate() + days);
+                    const option = document.createElement('option');
+                    option.value = date.toISOString();
+                    option.textContent = text;
+                    select.appendChild(option);
+                });
+            }
+
+            addMission() {
+                const text = document.getElementById('todoInput').value.trim();
+                const deadline = document.getElementById('missionDeadline').value;
+                const rank = document.getElementById('missionRank').value;
+                
+                if (text && deadline) {
+                    const newMission = new Mission(text, rank, new Date(deadline).getTime());
+                    this.missions.unshift(newMission);
+                    document.getElementById('todoInput').value = '';
+                    document.getElementById('missionDeadline').value = '';
+                    this.saveData();
+                    this.render();
+                    this.showAlert('NEW MISSION ADDED!', '🔥');
+                } else {
+                    this.showAlert('Please fill all fields!', '⚠️');
+                }
+            }
+
+            completeMission(id) {
+                const mission = this.missions.find(m => m.id === id);
+                if (mission && !mission.completed && !mission.failed) {
+                    mission.completed = true;
+                    this.stats.rep += mission.reward;
+                    this.checkLevelUp();
+                    this.saveData();
+                    this.render();
+                    this.showAlert(`+${mission.reward} RESPECT`, '👊');
+                }
+            }
+
+            deleteMission(id) {
+                this.missions = this.missions.filter(m => m.id !== id);
+                this.saveData();
+                this.render();
+                this.showAlert('MISSION DELETED', '🗑️');
+            }
+
+            updateTimers() {
+                const now = Date.now();
+                let hasChanges = false;
+
+                this.missions.forEach(mission => {
+                    if (!mission.completed && !mission.failed) {
+                        const timeLeft = mission.deadline - now;
+                        if (timeLeft < 0) {
+                            mission.timeLeft = 'EXPIRED';
+                            if (!mission.failed) {
+                                mission.failed = true;
+                                this.stats.rep = Math.max(0, this.stats.rep - mission.reward);
+                                hasChanges = true;
+                            }
+                        } else {
+                            const d = Math.floor(timeLeft / 86400000);
+                            const h = Math.floor((timeLeft % 86400000) / 3600000);
+                            const m = Math.floor((timeLeft % 3600000) / 60000);
+                            mission.timeLeft = d > 0 ? `${d}d ${h}h` : h > 0 ? `${h}h ${m}m` : `${m}m`;
+                        }
+                    }
+                });
+
+                if (hasChanges) {
+                    this.updateStats();
+                    this.saveData();
+                }
+                this.render();
+            }
+
+            checkLevelUp() {
+                if (this.stats.rep >= this.stats.nextLevel) {
+                    this.stats.level++;
+                    this.stats.rep -= this.stats.nextLevel;
+                    this.stats.nextLevel = Math.floor(this.stats.nextLevel * 1.5);
+                    this.showAlert('LEVEL UP!', '💪');
+                }
+                this.updateStats();
+            }
+
+            updateStats() {
+                document.getElementById('level').textContent = this.stats.level;
+                document.getElementById('rep').textContent = this.stats.rep;
+                document.getElementById('nextLevel').textContent = this.stats.nextLevel;
+                document.getElementById('repBar').style.width =
+                    `${Math.min(100, (this.stats.rep / this.stats.nextLevel) * 100)}%`;
+            }
+
+            saveData() {
+                localStorage.setItem('missions', JSON.stringify(this.missions));
+                localStorage.setItem('stats', JSON.stringify(this.stats));
+            }
+
+            saveToFile() {
+                const data = { missions: this.missions, stats: this.stats };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `street-tasks-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                this.showAlert('GAME SAVED!', '💾');
+            }
+
+            loadFromFile() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = event => {
+                        try {
+                            const data = JSON.parse(event.target.result);
+                            if (!data.missions || !data.stats) throw new Error('Invalid save file');
+                            this.missions = data.missions;
+                            this.stats = data.stats;
+                            this.saveData();
+                            this.render();
+                            this.updateStats();
+                            this.showAlert('GAME LOADED!', '📂');
+                        } catch {
+                            this.showAlert('INVALID SAVE FILE!', '⚠️');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            }
+
+            newGame() {
+                if (confirm('Start new game? All progress will be lost!')) {
+                    this.missions = [];
+                    this.stats = { level: 1, rep: 0, nextLevel: 100 };
+                    this.saveData();
+                    this.render();
+                    this.updateStats();
+                    this.showAlert('NEW GAME STARTED!', '🎮');
+                }
+            }
+
+            sortMissions(criteria) {
+                const rankOrder = { S: 0, A: 1, B: 2, C: 3 };
+                this.missions.sort((a, b) => {
+                    if (criteria === 'rank') return rankOrder[a.rank] - rankOrder[b.rank];
+                    if (criteria === 'deadline') return a.deadline - b.deadline;
+                    return 0;
+                });
+                this.render();
+                this.showAlert('MISSIONS SORTED!', '📋');
+            }
+
+            render() {
+                const missionList = document.getElementById('missionList');
+                missionList.innerHTML = this.missions.map(m => `
+                    <div class="mission${m.completed ? ' completed' : ''}${m.failed ? ' failed' : ''}">
+                        <span class="rank-badge">${m.rank}</span>
+                        <div class="mission-text">${m.text}</div>
+                        <div class="timer">${m.timeLeft || 'Calculating...'}</div>
+                        <div class="mission-actions">
+                            ${!m.completed && !m.failed ? 
+                              `<button class="complete-btn" onclick="gang.completeMission(${m.id})">COMPLETE</button>` : ''}
+                            <button class="delete-btn" onclick="gang.deleteMission(${m.id})">DELETE</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            showAlert(text, icon) {
+                const existing = document.querySelector('.alert');
+                if (existing) existing.remove();
+                
+                const alert = document.createElement('div');
+                alert.className = 'alert';
+                alert.innerHTML = `${icon} ${text}`;
+                document.body.appendChild(alert);
+                
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                }, 2500);
+            }
+
+            toggleMenu() {
+                document.getElementById('menuOverlay').classList.toggle('active');
+            }
+
+            toggleTheme() {
+                document.body.dataset.theme = document.body.dataset.theme === 'dark' ? '' : 'dark';
+                localStorage.setItem('theme', document.body.dataset.theme || 'light');
+                this.showAlert('THEME CHANGED!', '🌓');
+            }
+
+            initThemeToggle() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme && savedTheme === 'dark') {
+                    document.body.dataset.theme = 'dark';
+                }
+            }
+        }
+
+        // Initialize the app
+        const gang = new StreetGang();
+    </script>
+</body>
+</html>
